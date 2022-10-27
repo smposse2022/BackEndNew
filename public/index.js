@@ -10,7 +10,8 @@ Swal.fire({
   allowOutsideClick: false,
 }).then((respuesta) => {
   user = respuesta.value;
-}); /*
+});
+
 //guardar un productos
 const productForm = document.getElementById("form");
 productForm.addEventListener("submit", (evt) => {
@@ -30,7 +31,7 @@ productForm.addEventListener("submit", (evt) => {
 
 //productos en tiempo real
 const createTable = async (data) => {
-  const response = await fetch("./templates/tabla.hbs");
+  const response = await fetch("../views/partials/table.handlebars");
   const result = await response.text();
   const template = Handlebars.compile(result);
   const html = await template({ products: data });
@@ -41,4 +42,30 @@ const productsContainer = document.getElementById("productsContainer");
 socketClient.on("products", async (data) => {
   const htmlProducts = await createTable(data);
   productsContainer.innerHTML = htmlProducts;
-});*/
+});
+
+//logica del chat
+//enviar mensaje
+const campo = document.getElementById("messageField");
+
+campo.addEventListener("keydown", (evt) => {
+  console.log(evt.key);
+  if (evt.key === "Enter") {
+    socketClient.emit("message", {
+      username: user,
+      message: campo.value,
+    });
+    campo.value = "";
+  }
+});
+//mostrar todos los mensajes cuando usuario carga pag
+const messageContainer = document.getElementById("messageContainer");
+socketClient.on("historico", (data) => {
+  console.log(data);
+  let elementos = "";
+  data.forEach((item) => {
+    elementos =
+      elementos + `<p><strong>${item.username}</strong>: ${item.message}</p>`;
+  });
+  messageContainer.innerHTML = elementos;
+});

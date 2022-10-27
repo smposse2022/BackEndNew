@@ -1,0 +1,18 @@
+[
+  {
+    "username": "Santi",
+    "message": "Hola"
+  },
+  {
+    "username": "Santi",
+    "message": "Chau"
+  },
+  {
+    "username": "Pablo",
+    "message": "como va?"
+  },
+  {
+    "username": "Santi",
+    "message": "todo bien, vos?"
+  }
+]
