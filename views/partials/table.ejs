@@ -1,0 +1,26 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Id</th>
+      <th scope="col">Título</th>
+      <th scope="col">Precio</th>
+      <th scope="col">Imágen</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% for (let product of products){ %>
+    <tr>
+      <th scope="row"><%= product.id %></th>
+      <td><%= product.title %></td>
+      <td><%= product.price %></td>
+      <td>
+        <img
+          src="<%= product.thumbnail %>"
+          alt="Imagen de producto"
+          width="50"
+        />
+      </td>
+    </tr>
+    <% } %>
+  </tbody>
+</table>
