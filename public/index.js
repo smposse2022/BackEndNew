@@ -1,11 +1,10 @@
-console.log("javascript fun");
 //punto de comunicacion cliente
 const socketClient = io();
-//captura el valor del usuario
+//captura el nombre del usuario al ingresar
 let user;
 Swal.fire({
-  title: "hola usuario",
-  text: "bienvenido",
+  title: "Hola usuario",
+  text: "Ingrese su nombre",
   input: "text",
   allowOutsideClick: false,
 }).then((respuesta) => {
@@ -20,18 +19,18 @@ productForm.addEventListener("submit", (evt) => {
   const product = {
     title: document.getElementById("title").value,
     price: document.getElementById("price").value,
-    image: document.getElementById("image").value,
+    image: document.getElementById("thumbnail").value,
   };
   title.value = "";
   price.value = "";
-  image.value = "";
+  thumbnail.value = "";
   //enviamos el nuevo producto al servidor
   socketClient.emit("newProduct", product);
 });
 
 //productos en tiempo real
 const createTable = async (data) => {
-  const response = await fetch("../views/partials/table.handlebars");
+  const response = await fetch("./templates/table.handlebars");
   const result = await response.text();
   const template = Handlebars.compile(result);
   const html = await template({ products: data });
@@ -44,7 +43,7 @@ socketClient.on("products", async (data) => {
   productsContainer.innerHTML = htmlProducts;
 });
 
-//logica del chat
+//logica del chat con Websocket
 //enviar mensaje
 const campo = document.getElementById("messageField");
 
@@ -58,14 +57,13 @@ campo.addEventListener("keydown", (evt) => {
     campo.value = "";
   }
 });
-//mostrar todos los mensajes cuando usuario carga pag
+//mostrar los mensajes al cargar la página
 const messageContainer = document.getElementById("messageContainer");
 socketClient.on("historico", (data) => {
-  console.log(data);
-  let elementos = "";
+  let elements = "";
   data.forEach((item) => {
-    elementos =
-      elementos + `<p><strong>${item.username}</strong>: ${item.message}</p>`;
+    elements =
+      elements + `<p><strong>${item.username}</strong>: ${item.message}</p>`;
   });
-  messageContainer.innerHTML = elementos;
+  messageContainer.innerHTML = elements;
 });

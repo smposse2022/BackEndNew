@@ -1,8 +1,9 @@
 const fs = require("fs");
+const path = require("path");
 
 class Contenedor {
   constructor(nameFile) {
-    this.nameFile = nameFile;
+    this.nameFile = path.join(__dirname, `../files/${nameFile}`);
   }
 
   save = async (product) => {

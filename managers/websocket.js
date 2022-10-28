@@ -3,7 +3,7 @@ const path = require("path");
 
 class ContenedorWebsocket {
   constructor(nameFile) {
-    this.nameFile = nameFile;
+    this.nameFile = path.join(__dirname, `../files/${nameFile}`);
   }
   save = async (obj) => {
     await fs.promises.writeFile(this.nameFile, JSON.stringify(obj, null, 2));
