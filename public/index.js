@@ -1,4 +1,4 @@
-//punto de comunicacion cliente
+/*//punto de comunicacion cliente
 const socketClient = io();
 //captura el nombre del usuario al ingresar
 let user;
@@ -66,4 +66,4 @@ socketClient.on("historico", (data) => {
       elements + `<p><strong>${item.username}</strong>: ${item.message}</p>`;
   });
   messageContainer.innerHTML = elements;
-});
+});*/
