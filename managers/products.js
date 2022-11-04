@@ -1,109 +1,69 @@
-const fs = require("fs");
-const path = require("path");
+import {options} from("../options/mySqulConfig")
+import knex from "knex";
 
-class Contenedor {
-  constructor(nameFile) {
-    this.nameFile = path.join(__dirname, `../files/${nameFile}`);
+const database = knex(options);
+
+class ContenedorSql {
+  Constructor(options, tableName) {
+    this.database = knex(options);
+    this.table = tableName;
+  }
+  getAll= async()=> {
+    const result = await this.database("products").select("*");
+    const productos = result.map((elm) => ({ ...elm }));
+    return productos;
   }
 
   save = async (product) => {
-    try {
-      // Leer si el archivo existe
-      if (fs.existsSync(this.nameFile)) {
-        const contenido = await fs.promises.readFile(this.nameFile, "utf-8");
-        if (contenido) {
-          const productos = JSON.parse(contenido);
-          // Verificar si el producto ya existe en el archivo
-          const newProduct = {
-            id: productos.length + 1,
-            ...product,
-          };
-          productos.push(newProduct);
-          await fs.promises.writeFile(
-            this.nameFile,
-            JSON.stringify(productos, null, 2)
-          );
-        } else {
-          const newProduct = {
-            id: 1,
-            ...product,
-          };
-          // Creamos el archivo
-          await fs.promises.writeFile(
-            this.nameFile,
-            JSON.stringify([newProduct], null, 2)
-          );
-        }
-      } else {
-        const newProduct = {
-          id: 1,
-          ...product,
-        };
-        // Creamos el archivo
-        await fs.promises.writeFile(
-          this.nameFile,
-          JSON.stringify([newProduct], null, 2)
-        );
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    await database("products").insert(product)
+    .then(() => console.log("Data agregada"))
+    .catch((err) => console.log(err))
+    .finally(() => database.destroy());
+  }
+      
 
   getById = async (id) => {
-    try {
-      if (fs.existsSync(this.nameFile)) {
-        const contenido = await fs.promises.readFile(this.nameFile, "utf-8");
-        if (contenido) {
-          const productos = JSON.parse(contenido);
-          const producto = productos.find((item) => item.id === id);
-          return producto;
-        } else {
-          return "El archivo está vacío";
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  getAll = async () => {
-    const contenido = await fs.promises.readFile(this.nameFile, "utf-8");
-    const productos = JSON.parse(contenido);
-    return productos;
+    await database
+    .from("products")
+    .select("*")
+    .where("id", "=", id)
+    .then((result) => {
+    const productoElegido = result.map((element) => ({ ...element }));
+    console.log(productoElegido);
+  })
+  .catch((err) => console.log(err))
+  .finally(() => database.destroy());
   };
 
   deleteById = async (id) => {
-    const contenido = await fs.promises.readFile(this.nameFile, "utf-8");
-    const productos = JSON.parse(contenido);
-    const productoSinElBorrado = productos.filter((item) => item.id !== id);
-    await fs.promises.writeFile(
-      this.nameFile,
-      JSON.stringify(productoSinElBorrado, null, 2)
-    );
-  };
+    await database
+    .from("products")
+    .where("id", "=", id)
+    .del()
+    .then(() => console.log("producto eliminado"))
+    .catch((err) => console.log(err))
+    .finally(() => database.destroy());
+    };
 
   deleteAll = async () => {
-    await fs.promises.writeFile(this.nameFile, JSON.stringify([], null, 2));
+    await database
+    .from("products")
+    .select("*")
+    .del()
+    .then(() => console.log("productos eliminado"))
+    .catch((err) => console.log(err))
+    .finally(() => database.destroy());
   };
 
   updateById = async (id, body) => {
-    try {
-      const productos = await this.getAll();
-      const productPos = productos.findIndex((el) => el.id === id);
-      productos[productPos] = {
-        id: id,
-        ...body,
-      };
-      await fs.promises.writeFile(
-        this.nameFile,
-        json.stringify(productos, null, 2)
-      );
-      return productos;
-    } catch (error) {
-      console.log(error);
-    }
+    database
+    .from("products")
+    .where("id", "=", id)
+    .update({ body: body })
+    .then(() => console.log("producto actualizado"))
+    .catch((err) => console.log(err))
+    .finally(() => database.destroy());
   };
 }
 
-module.exports = Contenedor;
+module.exports = ContenedorSql;

@@ -1,11 +1,13 @@
 const express = require("express");
 const { Server } = require("socket.io");
-const Contenedor = require("./managers/products");
-const ContenedorWebsocket = require("./managers/websocket");
+const ContenedorSql = require("./managers/products");
+const ContenedorWebsocketSqlite = require("./managers/websocket");
 const PORT = process.env.PORT || 8080;
+const optionMysql = require("./options/mySqulConfig");
+const optionSqlite = require("./options/sqliteConfig");
 
-const listaProductos = new Contenedor("Products.txt");
-const chatWebsocket = new ContenedorWebsocket("Messages.txt");
+const listaProductos = new ContenedorSql(optionMysql, "products");
+const chatWebsocket = new ContenedorWebsocketSqlite(optionSqlite, "messages");
 
 // Crear el servidor
 const app = express();

@@ -1,22 +1,24 @@
-const fs = require("fs");
-const path = require("path");
+import {options} from("../options/sqliteConfig")
+import knex from "knex";
 
-class ContenedorWebsocket {
-  constructor(nameFile) {
-    this.nameFile = path.join(__dirname, `../files/${nameFile}`);
+const database = knex(options);
+
+class ContenedorWebsocketSqlite {
+  Constructor(options, tableName) {
+    this.database = knex(options);
+    this.table = tableName;
   }
   save = async (obj) => {
-    await fs.promises.writeFile(this.nameFile, JSON.stringify(obj, null, 2));
+    await database("messages").insert(obj)
+    .then(() => console.log("Data agregada"))
+    .catch((err) => console.log(err))
+    .finally(() => database.destroy());
+  }
   };
   getAll = async () => {
-    if (this.nameFile) {
-      const contenido = await fs.promises.readFile(this.nameFile, "utf-8");
-      if (contenido) {
-        const mensajes = JSON.parse(contenido);
-        return mensajes;
-      } else {
-      }
-    }
+    const result = await this.database("messages").select("*");
+    const messages = result.map((elm) => ({ ...elm }));
+    return messages;
   };
-}
-module.exports = ContenedorWebsocket;
+
+module.exports = ContenedorWebsocketSqlite;
