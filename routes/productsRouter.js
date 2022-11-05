@@ -7,6 +7,7 @@ const listaProductos = new Contenedor("Products.txt");
 const contenedorCarritos = new ContenedorCarritos("Carritos.txt");
 
 // Validaciones
+const isAdmin = true;
 productsRouter.use(function isAdmin(req, res, next) {
   if (req.body.isAdmin) {
     next();
