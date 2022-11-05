@@ -7,14 +7,14 @@ const listaProductos = new Contenedor("Products.txt");
 const contenedorCarritos = new ContenedorCarritos("Carritos.txt");
 
 // Validaciones
-const isAdmin = true;
-productsRouter.use(function isAdmin(req, res, next) {
-  if (req.body.isAdmin) {
+const isAdminBoolean = true;
+function isAdmin(req, res, next) {
+  if (isAdminBoolean) {
     next();
   } else {
     res.status(403).send(`Error, ruta ${req.url} no autorizada`);
   }
-});
+}
 
 // Ruta Handlebar - GET
 productsRouter.get("/", (req, res) => {
@@ -60,11 +60,12 @@ productsRouter.post("/productos", isAdmin, async (req, res) => {
   try {
     const newProduct = req.body;
     const productos = await listaProductos.save(newProduct);
-    res.redirect("/api/productos");
-    res.json({
-      message: "productos más el nuevo",
-      response: productos,
-    });
+    res
+      .json({
+        message: "productos más el nuevo",
+        response: productos,
+      })
+      .redirect("/api/productos");
   } catch (error) {
     res.status(500).send("Hubo un error en el servidor");
   }

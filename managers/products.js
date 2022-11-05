@@ -23,6 +23,7 @@ class Contenedor {
             this.nameFile,
             JSON.stringify(productos, null, 2)
           );
+          return newProduct;
         } else {
           const newProduct = {
             id: 1,
@@ -33,6 +34,7 @@ class Contenedor {
             this.nameFile,
             JSON.stringify([newProduct], null, 2)
           );
+          return newProduct;
         }
       } else {
         const newProduct = {
@@ -44,6 +46,7 @@ class Contenedor {
           this.nameFile,
           JSON.stringify([newProduct], null, 2)
         );
+        return newProduct;
       }
     } catch (error) {
       console.log(error);

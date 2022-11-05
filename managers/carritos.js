@@ -23,6 +23,7 @@ class ContenedorCarritos {
             this.nameFile,
             JSON.stringify(carritos, null, 2)
           );
+          return newCarrito;
         } else {
           const newCarrito = {
             id: 1,
@@ -33,6 +34,7 @@ class ContenedorCarritos {
             this.nameFile,
             JSON.stringify([newCarrito], null, 2)
           );
+          return newCarrito;
         }
       } else {
         const newCarrito = {
@@ -44,6 +46,7 @@ class ContenedorCarritos {
           this.nameFile,
           JSON.stringify([newCarrito], null, 2)
         );
+        return newCarrito;
       }
     } catch (error) {
       console.log(error);
