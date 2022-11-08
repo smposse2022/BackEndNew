@@ -20,6 +20,9 @@ app.use(express.static(__dirname + "/public"));
 //servidor de express
 const server = app.listen(PORT, () => console.log(`listening on port ${PORT}`));
 
+//api routes
+app.use("/api", productsRouter);
+
 //configuracion template engine handlebars
 app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
@@ -34,9 +37,6 @@ app.get("/", async (req, res) => {
 app.get("/productos", async (req, res) => {
   res.render("products", { products: await productosApi.getAll() });
 });
-
-//api routes
-app.use("/api", productsRouter);
 
 //servidor de websocket y lo conectamos con el servidor de express
 const io = new Server(server);
