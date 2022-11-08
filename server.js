@@ -1,24 +1,42 @@
 const express = require("express");
+const { productsRouter, products } = require("./routes/productRouter");
+const handlebars = require("express-handlebars");
 const { Server } = require("socket.io");
-const ContenedorSql = require("./managers/products");
-const ContenedorWebsocketSqlite = require("./managers/websocket");
+const ContenedorSql = require("./managers/contenedorSql");
+//const ContenedorWebsocketSqlite = require("./managers/websocket");
 const PORT = process.env.PORT || 8080;
-const optionMysql = require("./options/mySqulConfig");
-const optionSqlite = require("./options/sqliteConfig");
+const option = require("./options/mySqulConfig");
 
-const listaProductos = new ContenedorSql(optionMysql, "products");
-const chatWebsocket = new ContenedorWebsocketSqlite(optionSqlite, "messages");
+const listaProductos = new ContenedorSql(option.mariDb, "products");
+const chatWebsocket = new ContenedorSql(option.sqliteDb, "messages");
 
 // Crear el servidor
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+//trabajar con archivos estaticos de public
+app.use(express.static(__dirname + "/public"));
 
 //servidor de express
 const server = app.listen(PORT, () => console.log(`listening on port ${PORT}`));
 
-//trabajar con archivos estaticos de public
-app.use(express.static(__dirname + "/public"));
+//configuracion template engine handlebars
+app.engine("handlebars", handlebars.engine());
+app.set("views", __dirname + "/views");
+app.set("view engine", "handlebars");
+
+// routes
+//view routes
+app.get("/", async (req, res) => {
+  res.render("home");
+});
+
+app.get("/productos", async (req, res) => {
+  res.render("products", { products: await productosApi.getAll() });
+});
+
+//api routes
+app.use("/api", productsRouter);
 
 //servidor de websocket y lo conectamos con el servidor de express
 const io = new Server(server);
@@ -44,6 +62,6 @@ io.on("connection", async (socket) => {
     console.log(data);
     historicosMensajes.push(data);
     await chatWebsocket.save(historicosMensajes);
-    await io.sockets.emit("historico", await chatWebsocket.getAll());
+    io.sockets.emit("historico", await chatWebsocket.getAll());
   });
 });

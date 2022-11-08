@@ -21,11 +21,9 @@ productForm.addEventListener("submit", (evt) => {
     price: document.getElementById("price").value,
     image: document.getElementById("thumbnail").value,
   };
-  title.value = "";
-  price.value = "";
-  thumbnail.value = "";
   //enviamos el nuevo producto al servidor
   socketClient.emit("newProduct", product);
+  productForm.reset();
 });
 
 //productos en tiempo real
@@ -33,7 +31,7 @@ const createTable = async (data) => {
   const response = await fetch("./templates/table.handlebars");
   const result = await response.text();
   const template = Handlebars.compile(result);
-  const html = await template({ products: data });
+  const html = template({ products: data });
   return html;
 };
 

@@ -1,5 +1,5 @@
-import {options} from("../options/sqliteConfig")
-import knex from "knex";
+const options = require("../options/mySqulConfig");
+const knex = require("knex");
 
 const database = knex(options);
 
@@ -9,16 +9,17 @@ class ContenedorWebsocketSqlite {
     this.table = tableName;
   }
   save = async (obj) => {
-    await database("messages").insert(obj)
-    .then(() => console.log("Data agregada"))
-    .catch((err) => console.log(err))
-    .finally(() => database.destroy());
-  }
+    await database("messages")
+      .insert(obj)
+      .then(() => console.log("Data agregada"))
+      .catch((err) => console.log(err))
+      .finally(() => database.destroy());
   };
-  getAll = async () => {
-    const result = await this.database("messages").select("*");
-    const messages = result.map((elm) => ({ ...elm }));
-    return messages;
-  };
+}
+getAll = async () => {
+  const result = await this.database("messages").select("*");
+  const messages = result.map((elm) => ({ ...elm }));
+  return messages;
+};
 
 module.exports = ContenedorWebsocketSqlite;

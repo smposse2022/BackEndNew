@@ -1,11 +1,19 @@
-export const options = {
-  // con qué gestor de base de datos me voy a conectar
-  client: "mysql",
-  // toda la info de la base de datos para conectarme
-  connection: {
-    host: "127.0.0.1",
-    user: "root",
-    password: "",
-    database: "dbpruebas", // primero hay que crearla
+const path = require("path");
+const options = {
+  mariDb: {
+    client: "mysql",
+    connection: {
+      host: "127.0.0.1",
+      user: "root",
+      password: "",
+      database: "desafiosql",
+    },
+  },
+  sqliteDb: {
+    client: "sqlite3",
+    connection: {
+      filename: path.join(__dirname, "../db/database.sqlite"),
+    },
   },
 };
+module.exports = options;
