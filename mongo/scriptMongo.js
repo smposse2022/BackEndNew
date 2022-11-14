@@ -19,12 +19,16 @@ db.productos.find({title:"Chomba Rosa"}) - realiza una consulta por nombre espec
 
 db.productos.find({price: {$lt: 1000}}) - lista los productos con precio menor a 1000
 
-REVISAR: db.productos.find({price: {$in: [1000, 3000]}}) - Lista los productos con precio entre 1000 y 3000
+db.productos.find({$and:[{price:{$gte: 1000}},{price:{$lte: 3000}}]}) - Lista los productos con precio entre 1000 y 3000
 
-FALTA EL 5 b 4 - Sort
+db.productos.find().sort({price:1}).skip(2).limit(1) - Trae el tercer producto más barato
 
 db.productos.find({price: {$gt: 3000}}) - lista los productos con precio mayor a 3000
 
-REVISAR: db.productos.update({$set: {stock: 100}}) - Agrega stock 100 a todos los productos
+db.productos.updateMany({},{$set: {stock: 100}}) - Agrega stock 100 a todos los productos
+
+db.productos.updateMany({price: {$gt: 4000}},{$set: {stock: 0}}) - Pone en 0 el stock de los productos con precio mayor a 4000
+
+db.productos.deleteMany({price: {$lt: 1000}}) - borra los documentos con precio menor a 1000
 
 */
