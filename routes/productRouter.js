@@ -4,7 +4,7 @@ const options = require("../options/mySqulConfig");
 
 const router = express.Router();
 
-const listaProductos = new ContenedorSql(options.mariaDB, "products");
+const listaProductos = new ContenedorSql(options.mariDb, "products");
 
 router.get("/", async (req, res) => {
   const productos = await listaProductos.getAll();

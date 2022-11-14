@@ -56,11 +56,11 @@ const createTables = async () => {
     .then(() => console.log("Data agregada"))
     .catch((err) => console.log(err))
     .finally(() => dbmsql.destroy());*/
-    dbmsql.destroy();
+    //dbmsql.destroy();
     // validamos si la tabla de datos ya existe en la base de datos
     const tableMessagesExists = await dbsqlite.schema.hasTable("messages");
     if (tableMessagesExists) {
-      await dbmsql.schema.dropTable("messages");
+      await dbsqlite.schema.dropTable("messages");
     }
     await dbsqlite.schema.createTable("messages", (table) => {
       table.increments("id");
@@ -69,7 +69,7 @@ const createTables = async () => {
       table.string("timestamp", 500).nullable(false);
     });
     console.log("messages table created");
-    dbsqlite.destroy();
+    //dbsqlite.destroy();
   } catch (error) {
     console.log(error);
   }

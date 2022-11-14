@@ -35,7 +35,7 @@ app.get("/", async (req, res) => {
 });
 
 app.get("/productos", async (req, res) => {
-  res.render("products", { products: await productosApi.getAll() });
+  res.render("products", { products: await listaProductos.getAll() });
 });
 
 //servidor de websocket y lo conectamos con el servidor de express

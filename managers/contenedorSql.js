@@ -1,7 +1,7 @@
 const knex = require("knex");
 
 class ContenedorSql {
-  Constructor(options, tableName) {
+  constructor(options, tableName) {
     this.database = knex(options);
     this.tableName = tableName;
   }
@@ -12,16 +12,17 @@ class ContenedorSql {
       const result = data.map((elm) => ({ ...elm }));
       return result;
     } catch (error) {
-      return `Hubo un error ${error}`;
+      console.log(error);
     }
   };
 
   save = async (newItem) => {
     try {
-      const [id] = await this.database.from(this.tableName).insert(newItem);
-      return `new item saved with id: ${id}`;
+      console.log(newItem);
+      await this.database.from(this.tableName).insert(newItem);
+      return `new item saved with id:`;
     } catch (error) {
-      return `Hubo un error ${error}`;
+      console.log(error);
     }
   };
 
@@ -34,7 +35,7 @@ class ContenedorSql {
           console.log(productoElegido);
         })*/
     } catch (error) {
-      return `Hubo un error ${error}`;
+      console.log(error);
     }
   };
 
@@ -46,7 +47,7 @@ class ContenedorSql {
         .del();
       return itemsSinElEliminado;
     } catch (error) {
-      return `Hubo un error ${error}`;
+      console.log(error);
     }
   };
 
@@ -54,7 +55,7 @@ class ContenedorSql {
     try {
       await this.database.from(this.tableName).select("*").del();
     } catch (error) {
-      return `Hubo un error ${error}`;
+      console.log(error);
     }
   };
 
@@ -65,7 +66,7 @@ class ContenedorSql {
         .where("id", id)
         .update({ body: body });
     } catch (error) {
-      return `Hubo un error ${error}`;
+      console.log(error);
     }
   };
 }
