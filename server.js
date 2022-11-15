@@ -40,7 +40,7 @@ app.use("/api/products", productsRouter);
 
 //servidor de websocket y lo conectamos con el servidor de express
 const io = new Server(server);
-let historicosMensajes = [];
+//let historicosMensajes = [];
 
 //socket
 io.on("connection", async (socket) => {

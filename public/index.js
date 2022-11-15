@@ -1,4 +1,3 @@
-//punto de comunicacion cliente
 const socketClient = io();
 //captura el nombre del usuario al ingresar
 let user;
@@ -25,7 +24,7 @@ Swal.fire({
 });
 
 //envio del formulario
-const productForm = document.getElementById("productForm");
+const productForm = document.getElementById("form");
 productForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
   const product = {
@@ -68,7 +67,7 @@ const chatButton = document.getElementById("sendMsg");
 
 chatButton.addEventListener("click", () => {
   socketClient.emit("newMessage", {
-    user: user,
+    username: user,
     timestamp: new Date().toLocaleString(),
     message: chatInput.value,
   });

@@ -43,19 +43,6 @@ const createTables = async () => {
       table.integer("thumbnail", 200).nullable(false);
     });
     console.log("products table created");
-    /*
-  // insertar articulos
-  await dbmsql("products").insert(productArray); // no tengo nada en articulosArray
-
-  // listar la tabla mostrando los resultados en la consola
-  const result = await dbmsql("articulos").select("*");
-  const productos = result.map((elm) => ({ ...elm }));
-  console
-    .log(productos)
-
-    .then(() => console.log("Data agregada"))
-    .catch((err) => console.log(err))
-    .finally(() => dbmsql.destroy());*/
     dbmsql.destroy();
     // validamos si la tabla de datos ya existe en la base de datos
     const tableMessagesExists = await dbsqlite.schema.hasTable("messages");
