@@ -1,6 +1,6 @@
 const path = require("path");
 const options = {
-  mariDb: {
+  mariaDb: {
     client: "mysql",
     connection: {
       host: "127.0.0.1",

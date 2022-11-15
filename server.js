@@ -7,7 +7,7 @@ const ContenedorSql = require("./managers/contenedorSql");
 const PORT = process.env.PORT || 8080;
 const option = require("./options/mySqulConfig");
 
-const listaProductos = new ContenedorSql(option.mariDb, "products");
+const listaProductos = new ContenedorSql(option.mariaDb, "products");
 const chatWebsocket = new ContenedorSql(option.sqliteDb, "messages");
 
 // Crear el servidor
@@ -19,9 +19,6 @@ app.use(express.static(__dirname + "/public"));
 
 //servidor de express
 const server = app.listen(PORT, () => console.log(`listening on port ${PORT}`));
-
-//api routes
-app.use("/api", productsRouter);
 
 //configuracion template engine handlebars
 app.engine("handlebars", handlebars.engine());
@@ -37,6 +34,9 @@ app.get("/", async (req, res) => {
 app.get("/productos", async (req, res) => {
   res.render("products", { products: await listaProductos.getAll() });
 });
+
+//api routes
+app.use("/api/products", productsRouter);
 
 //servidor de websocket y lo conectamos con el servidor de express
 const io = new Server(server);
@@ -56,12 +56,13 @@ io.on("connection", async (socket) => {
     io.sockets.emit("products", await listaProductos.getAll());
   });
 
-  socket.broadcast.emit("newUser");
-  socket.emit("historico", await chatWebsocket.getAll());
-  socket.on("message", async (data) => {
-    console.log(data);
-    historicosMensajes.push(data);
-    await chatWebsocket.save(historicosMensajes);
-    io.sockets.emit("historico", await chatWebsocket.getAll());
+  //CHAT
+  //Envio de todos los mensajes al socket que se conecta.
+  io.sockets.emit("messages", await chatWebsocket.getAll());
+
+  //recibimos el mensaje del usuario y lo guardamos en el archivo chat.txt
+  socket.on("newMessage", async (newMsg) => {
+    await chatWebsocket.save(newMsg);
+    io.sockets.emit("messages", await chatWebsocket.getAll());
   });
 });

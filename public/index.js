@@ -4,24 +4,35 @@ const socketClient = io();
 let user;
 Swal.fire({
   title: "Hola usuario",
-  text: "Ingrese su nombre",
+  text: "bienvenido, ingresa tu usario",
   input: "text",
+  customClass: {
+    validationMessage: "my-validation-message",
+  },
+  preConfirm: (value) => {
+    if (!value) {
+      Swal.showValidationMessage(
+        '<i class="fa fa-info-circle"></i>Nombre obligatorio'
+      );
+    }
+  },
   allowOutsideClick: false,
 }).then((respuesta) => {
   user = respuesta.value;
+  document.getElementById(
+    "userEmail"
+  ).innerHTML = `<strong>Bienvenido ${respuesta.value}!!</strong>`;
 });
 
-//guardar un productos
-const productForm = document.getElementById("form");
+//envio del formulario
+const productForm = document.getElementById("productForm");
 productForm.addEventListener("submit", (evt) => {
-  //prevenir q se refresque
   evt.preventDefault();
   const product = {
     title: document.getElementById("title").value,
     price: document.getElementById("price").value,
-    image: document.getElementById("thumbnail").value,
+    thumbnail: document.getElementById("thumbnail").value,
   };
-  //enviamos el nuevo producto al servidor
   socketClient.emit("newProduct", product);
   productForm.reset();
 });
@@ -35,33 +46,31 @@ const createTable = async (data) => {
   return html;
 };
 
-const productsContainer = document.getElementById("productsContainer");
 socketClient.on("products", async (data) => {
-  const htmlProducts = await createTable(data);
-  productsContainer.innerHTML = htmlProducts;
+  const htmlTable = await createTable(data);
+  const productsContainer = document.getElementById("productsContainer");
+  productsContainer.innerHTML = htmlTable;
 });
 
-//logica del chat con Websocket
-//enviar mensaje
-const campo = document.getElementById("messageField");
-
-campo.addEventListener("keydown", (evt) => {
-  console.log(evt.key);
-  if (evt.key === "Enter") {
-    socketClient.emit("message", {
-      username: user,
-      message: campo.value,
-    });
-    campo.value = "";
-  }
-});
-//mostrar los mensajes al cargar la página
-const messageContainer = document.getElementById("messageContainer");
-socketClient.on("historico", (data) => {
-  let elements = "";
-  data.forEach((item) => {
-    elements =
-      elements + `<p><strong>${item.username}</strong>: ${item.message}</p>`;
+//chat
+socketClient.on("messages", async (dataMsg) => {
+  let messageElements = "";
+  dataMsg.forEach((msg) => {
+    messageElements += `<div><strong>${msg.user} - ${msg.timestamp}:</strong> ${msg.message}</div>`;
   });
-  messageContainer.innerHTML = elements;
+  const chatContainer = document.getElementById("chatContainer");
+  chatContainer.innerHTML = dataMsg.length > 0 ? messageElements : "";
+});
+
+//envio del mensaje del chat
+const chatInput = document.getElementById("chatMsg");
+const chatButton = document.getElementById("sendMsg");
+
+chatButton.addEventListener("click", () => {
+  socketClient.emit("newMessage", {
+    user: user,
+    timestamp: new Date().toLocaleString(),
+    message: chatInput.value,
+  });
+  chatInput.value = "";
 });

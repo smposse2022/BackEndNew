@@ -1,6 +1,6 @@
 const options = require("../options/mySqulConfig");
 const knex = require("knex");
-const dbmsql = knex(options.mariDb);
+const dbmsql = knex(options.mariaDb);
 const dbsqlite = knex(options.sqliteDb);
 
 /*const productArray = [
@@ -56,7 +56,7 @@ const createTables = async () => {
     .then(() => console.log("Data agregada"))
     .catch((err) => console.log(err))
     .finally(() => dbmsql.destroy());*/
-    //dbmsql.destroy();
+    dbmsql.destroy();
     // validamos si la tabla de datos ya existe en la base de datos
     const tableMessagesExists = await dbsqlite.schema.hasTable("messages");
     if (tableMessagesExists) {
@@ -69,7 +69,7 @@ const createTables = async () => {
       table.string("timestamp", 500).nullable(false);
     });
     console.log("messages table created");
-    //dbsqlite.destroy();
+    dbsqlite.destroy();
   } catch (error) {
     console.log(error);
   }
