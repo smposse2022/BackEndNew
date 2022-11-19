@@ -1,17 +1,24 @@
-const express = require("express");
-const ContenedorSql = require("../managers/contenedorSql");
-const options = require("../options/mySqulConfig");
+import express from "express";
+import { checkAdminRole } from "../middlewares/checkRole.js";
+import { option } from "../options/mySqulConfig.js";
+import { ContenedorArchivo } from "../managers/ContenedorArchivo.js";
+import { ContenedorSql } from "../managers/ContenedorSql.js";
+import { ContenedorDaoProductos } from "../daos/index.js";
 
-const router = express.Router();
+// products router
+const productsRouter = express.Router();
 
-const listaProductos = new ContenedorSql(options.mariaDb, "products");
+//products manager
+// const listaProductos = new ContenedorArchivo(options.fileSystem.pathProducts);
+// const listaProductos = new ContenedorMysql(options.sqliteDB, "productos");
+const listaProductos = ContenedorDaoProductos;
 
-router.get("/", async (req, res) => {
+productsRouter.get("/", async (req, res) => {
   const productos = await listaProductos.getAll();
   res.send(productos);
 });
 
-router.get("/:id", async (req, res) => {
+productsRouter.get("/:id", async (req, res) => {
   const productId = req.params.id;
   const product = await listaProductos.getById(parseInt(productId));
   if (product) {
@@ -21,26 +28,23 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+productsRouter.post("/", checkAdminRole, async (req, res) => {
   const newProduct = req.body;
   const result = await listaProductos.save(newProduct);
   res.send(result);
 });
 
-router.put("/:id", async (req, res) => {
-  const cambioObj = req.body;
+productsRouter.put("/:id", checkAdminRole, async (req, res) => {
+  //const cambioObj = req.body;
   const productId = req.params.id;
-  const result = await listaProductos.updateById(
-    parseInt(productId),
-    cambioObj
-  );
+  const result = await listaProductos.updateById(parseInt(productId));
   res.send(result);
 });
 
-router.delete("/:id", async (req, res) => {
+productsRouter.delete("/:id", checkAdminRole, async (req, res) => {
   const productId = req.params.id;
   const result = await listaProductos.deleteById(parseInt(productId));
   res.send(result);
 });
 
-module.exports = { productsRouter: router };
+export { productsRouter };

@@ -1,14 +1,14 @@
-const express = require("express");
-const { productsRouter, products } = require("./routes/productRouter");
-const handlebars = require("express-handlebars");
-const { Server } = require("socket.io");
-const ContenedorSql = require("./managers/contenedorSql");
+import express from "express";
+import productsRouter from "./routes/productRouter.js";
+import cartRouter from "./routes/cartRouter.js";
+import handlebars from "express-handlebars"; // no estoy seguro que esté bien
+import Server from "socket.io";
+//const ContenedorSql = require("./managers/contenedorSql");
 //const ContenedorWebsocketSqlite = require("./managers/websocket");
 const PORT = process.env.PORT || 8080;
-const option = require("./options/mySqulConfig");
 
-const listaProductos = new ContenedorSql(option.mariaDb, "products");
-const chatWebsocket = new ContenedorSql(option.sqliteDb, "messages");
+//const listaProductos = new ContenedorSql(option.mariaDb, "products");
+//const chatWebsocket = new ContenedorSql(option.sqliteDb, "messages");
 
 // Crear el servidor
 const app = express();
@@ -35,8 +35,9 @@ app.get("/productos", async (req, res) => {
   res.render("products", { products: await listaProductos.getAll() });
 });
 
-//api routes
-app.use("/api/products", productsRouter);
+//router productos y carritos
+app.use("/api/productos", productsRouter);
+app.use("/api/carritos", cartsRouter);
 
 //servidor de websocket y lo conectamos con el servidor de express
 const io = new Server(server);
