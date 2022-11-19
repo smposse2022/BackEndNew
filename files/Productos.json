@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "title": "Pantalon",
+    "description": "Pantalon gris",
+    "codigo": 12,
+    "price": 5500,
+    "thumbnail": "https://d3ugyf2ht6aenh.cloudfront.net/stores/111/097/products/_mg_17161-dfec26ebd336d0efc616577498111535-1024-1024.jpg",
+    "stock": 10
+  },
+  {
+    "id": 2,
+    "title": "Remera",
+    "description": "Remera Verde Lisa",
+    "codigo": 13,
+    "price": 4500,
+    "thumbnail": "https://d3ugyf2ht6aenh.cloudfront.net/stores/111/097/products/_mg_17161-dfec26ebd336d0efc616577498111535-1024-1024.jpg",
+    "stock": 10
+  },
+  {
+    "id": 3,
+    "title": "Remera",
+    "description": "Remera Beige Lisa",
+    "codigo": 14,
+    "price": 4500,
+    "thumbnail": "https://d3ugyf2ht6aenh.cloudfront.net/stores/111/097/products/_mg_17061-ad68cdf82c5d284c4f16577496694867-1024-1024.jpg",
+    "stock": 10
+  },
+  {
+    "id": 4,
+    "title": "Remera",
+    "description": "Remera Negra Lisa",
+    "codigo": 15,
+    "price": 4500,
+    "thumbnail": "https://d3ugyf2ht6aenh.cloudfront.net/stores/111/097/products/_mg_16781-feb955b3b16b4a32a016577495798656-1024-1024.jpg",
+    "stock": 10
+  }
+]

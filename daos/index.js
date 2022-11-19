@@ -4,7 +4,7 @@ let ContenedorDaoProductos;
 let ContenedorDaoCarritos;
 
 //identificador
-let databaseType = "sql";
+let databaseType = "archivos";
 
 switch (databaseType) {
   case "archivos":

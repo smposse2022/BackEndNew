@@ -25,8 +25,8 @@ export const options = {
     },
     useNullAsDefault: true,
   },
-  /*firebase: {
+  firebase: {
     serviceKey: {},
     databaseUrl: "",
-  },*/
+  },
 };
