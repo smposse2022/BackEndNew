@@ -1,8 +1,8 @@
 import express from "express";
-import productsRouter from "./routes/productRouter.js";
-import cartRouter from "./routes/cartRouter.js";
+import { productsRouter } from "./routes/productRouter.js";
+import { cartsRouter } from "./routes/cartRouter.js";
 import handlebars from "express-handlebars"; // no estoy seguro que esté bien
-import Server from "socket.io";
+import { Server } from "socket.io";
 //const ContenedorSql = require("./managers/contenedorSql");
 //const ContenedorWebsocketSqlite = require("./managers/websocket");
 const PORT = process.env.PORT || 8080;
@@ -15,14 +15,14 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 //trabajar con archivos estaticos de public
-app.use(express.static(__dirname + "/public"));
+app.use(express.static("public"));
 
 //servidor de express
 const server = app.listen(PORT, () => console.log(`listening on port ${PORT}`));
 
 //configuracion template engine handlebars
 app.engine("handlebars", handlebars.engine());
-app.set("views", __dirname + "/views");
+app.set("views", "/views");
 app.set("view engine", "handlebars");
 
 // routes

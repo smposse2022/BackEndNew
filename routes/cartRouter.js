@@ -1,6 +1,6 @@
 import express from "express";
 import { options } from "../options/mySqulConfig.js";
-import { ContenedorArchivo } from "../managers/ContenedorArchivo.js";
+import { ContenedorArchivos } from "../managers/contenedorArchivos.js";
 import { ContenedorSql } from "../managers/ContenedorSql.js";
 import {
   ContenedorDaoProductos,
@@ -8,8 +8,8 @@ import {
 } from "../daos/index.js";
 
 //manager carritos
-// const listaProductos = new ContenedorArchivo(options.fileSystem.pathProducts);
-// const listaCarritos = new ContenedorArchivo(options.fileSystem.pathCarts);
+// const listaProductos = new ContenedorArchivos (options.fileSystem.pathProducts);
+// const listaCarritos = new ContenedorArchivos (options.fileSystem.pathCarts);
 // const listaProductos = new ContenedorSql(options.sqliteDB, "productos");
 // const listaCarritos = new ContenedorSql(options.sqliteDB, "carritos");
 const listaProductos = ContenedorDaoProductos;

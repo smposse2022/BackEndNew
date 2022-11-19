@@ -1,7 +1,7 @@
 import express from "express";
-import { checkAdminRole } from "../middlewares/checkRole.js";
-import { option } from "../options/mySqulConfig.js";
-import { ContenedorArchivo } from "../managers/ContenedorArchivo.js";
+import { checkAdminRole } from "../middlewares/isAdmin.js";
+import { options } from "../options/mySqulConfig.js";
+import { ContenedorArchivos } from "../managers/contenedorArchivos.js";
 import { ContenedorSql } from "../managers/ContenedorSql.js";
 import { ContenedorDaoProductos } from "../daos/index.js";
 
@@ -9,7 +9,7 @@ import { ContenedorDaoProductos } from "../daos/index.js";
 const productsRouter = express.Router();
 
 //products manager
-// const listaProductos = new ContenedorArchivo(options.fileSystem.pathProducts);
+// const listaProductos = new ContenedorArchivos (options.fileSystem.pathProducts);
 // const listaProductos = new ContenedorMysql(options.sqliteDB, "productos");
 const listaProductos = ContenedorDaoProductos;
 
