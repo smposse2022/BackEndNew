@@ -1,5 +1,7 @@
 import path from "path";
 import { fileURLToPath } from "url";
+import { productModel } from "../mongo/models/productModel.js";
+import { cartModel } from "../mongo/models/cartModel.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,6 +26,10 @@ export const options = {
       filename: path.join(__dirname, "../db/database.sqlite"),
     },
     useNullAsDefault: true,
+  },
+  mongo: {
+    pathProducts: productModel,
+    pathCarts: cartModel,
   },
   firebase: {
     serviceKey: {},

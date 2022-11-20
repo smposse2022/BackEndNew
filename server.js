@@ -3,6 +3,8 @@ import { productsRouter } from "./routes/productRouter.js";
 import { cartsRouter } from "./routes/cartRouter.js";
 import handlebars from "express-handlebars"; // no estoy seguro que esté bien
 import { Server } from "socket.io";
+import mongoose from "mongoose";
+
 //const ContenedorSql = require("./managers/contenedorSql");
 //const ContenedorWebsocketSqlite = require("./managers/websocket");
 const PORT = process.env.PORT || 8080;
@@ -67,3 +69,20 @@ io.on("connection", async (socket) => {
     io.sockets.emit("messages", await chatWebsocket.getAll());
   });
 });
+
+// conexiones Mongo
+// la url donde se está ejecutando mi base de datos
+const URL = "mongodb://127.0.0.1:27017/segundaPreEntrega";
+
+// conectamos la base de datos
+mongoose.connect(
+  URL,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  },
+  (error) => {
+    if (error) throw new Error(`Conexion fallida ${error}`);
+    console.log("conexion base de datos exitosa!");
+  }
+);
