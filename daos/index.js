@@ -2,7 +2,9 @@ import { options } from "../options/mySqulConfig.js";
 import { productModel } from "../mongo/models/productModel.js";
 import { cartModel } from "../mongo/models/cartModel.js";
 import mongoose from "mongoose";
-import admin from "firebase-admin";
+
+// generar llave para poder conectarnos de manera segura a nuestra app de Firebase
+// Vinculamos esa clave con nuestro serv principal
 
 let ContenedorDaoProductos;
 let ContenedorDaoCarritos;
@@ -46,12 +48,14 @@ switch (databaseType) {
     ContenedorDaoCarritos = new CartDaoMongo(cartModel);
     break;
   case "firebase":
-    const { ProductsDaoFirebase } = await import("./products/productsFiles.js");
-    const { CartsDaoFirebase } = await import("./carts/cartsFiles.js");
-    ContenedorDaoProductos = new ProductsDaoArchivos(
+    const { ProductsDaoFirebase } = await import(
+      "./products/productsFirebase.js"
+    );
+    const { CartsDaoFirebase } = await import("./carts/cartsFirebase.js");
+    ContenedorDaoProductos = new ProductsDaoFirebase(
       options.fileSystem.pathProducts
     );
-    ContenedorDaoCarritos = new CartsDaoArchivos(options.fileSystem.pathCarts);
+    ContenedorDaoCarritos = new CartsDaoFirebase(options.fileSystem.pathCarts);
     break;
 }
 

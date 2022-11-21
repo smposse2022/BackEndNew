@@ -45,7 +45,7 @@ class ContenedorMongo {
 
   deleteAll = async () => {
     try {
-      await productModel.deleteMany({});
+      await this.model.deleteMany({});
       console.log("Se han borrado todos los documentos de la colección");
     } catch (error) {
       console.log(error);
@@ -55,9 +55,9 @@ class ContenedorMongo {
   updateById = async (id, title) => {
     // no debería modificar sólo el título, ver de hacerlo con body
     try {
-      productUpdated = await this.model.updateOne({ _id: id }, { $set: title });
-      console.log(productUpdated);
-      return `product updated`;
+      itemUpdated = await this.model.updateOne({ _id: id }, { $set: title });
+      console.log(itemUpdated);
+      return `item updated`;
     } catch (error) {
       console.log(error);
     }
