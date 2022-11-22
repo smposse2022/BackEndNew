@@ -1,17 +1,17 @@
-const express = require("express");
-const ContenedorSql = require("../managers/contenedorSql");
-const options = require("../options/mySqulConfig");
+import express from "express";
+import { ContenedorSql } from "../managers/contenedorSql.js";
+import { options } from "../options/mySqulConfig.js";
 
-const router = express.Router();
+const productsRouter = express.Router();
 
 const listaProductos = new ContenedorSql(options.mariaDb, "products");
 
-router.get("/", async (req, res) => {
+productsRouter.get("/", async (req, res) => {
   const productos = await listaProductos.getAll();
   res.send(productos);
 });
 
-router.get("/:id", async (req, res) => {
+productsRouter.get("/:id", async (req, res) => {
   const productId = req.params.id;
   const product = await listaProductos.getById(parseInt(productId));
   if (product) {
@@ -21,13 +21,13 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+productsRouter.post("/", async (req, res) => {
   const newProduct = req.body;
   const result = await listaProductos.save(newProduct);
   res.send(result);
 });
 
-router.put("/:id", async (req, res) => {
+productsRouter.put("/:id", async (req, res) => {
   const cambioObj = req.body;
   const productId = req.params.id;
   const result = await listaProductos.updateById(
@@ -37,10 +37,10 @@ router.put("/:id", async (req, res) => {
   res.send(result);
 });
 
-router.delete("/:id", async (req, res) => {
+productsRouter.delete("/:id", async (req, res) => {
   const productId = req.params.id;
   const result = await listaProductos.deleteById(parseInt(productId));
   res.send(result);
 });
 
-module.exports = { productsRouter: router };
+export { productsRouter };

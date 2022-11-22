@@ -1,4 +1,5 @@
-const path = require("path");
+import path from "path";
+
 const options = {
   mariaDb: {
     client: "mysql",
@@ -12,8 +13,8 @@ const options = {
   sqliteDb: {
     client: "sqlite3",
     connection: {
-      filename: path.join(__dirname, "../db/database.sqlite"),
+      filename: path.join("../db/database.sqlite"),
     },
   },
 };
-module.exports = options;
+export { options };

@@ -1,28 +1,28 @@
-const express = require("express");
-const { productsRouter, products } = require("./routes/productRouter");
-const handlebars = require("express-handlebars");
-const { Server } = require("socket.io");
-const ContenedorSql = require("./managers/contenedorSql");
+import express from "express";
+import { productsRouter } from "./routes/productRouter.js";
+import handlebars from "express-handlebars";
+import { Server } from "socket.io";
+import { ContenedorSql } from "./managers/contenedorSql.js";
+import { options } from "./options/mySqulConfig.js";
 //const ContenedorWebsocketSqlite = require("./managers/websocket");
 const PORT = process.env.PORT || 8080;
-const option = require("./options/mySqulConfig");
 
-const listaProductos = new ContenedorSql(option.mariaDb, "products");
-const chatWebsocket = new ContenedorSql(option.sqliteDb, "messages");
+const listaProductos = new ContenedorSql(options.mariaDb, "products");
+const chatWebsocket = new ContenedorSql(options.sqliteDb, "messages");
 
 // Crear el servidor
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 //trabajar con archivos estaticos de public
-app.use(express.static(__dirname + "/public"));
+app.use(express.static("/public"));
 
 //servidor de express
 const server = app.listen(PORT, () => console.log(`listening on port ${PORT}`));
 
 //configuracion template engine handlebars
 app.engine("handlebars", handlebars.engine());
-app.set("views", __dirname + "/views");
+app.set("views", +"/views");
 app.set("view engine", "handlebars");
 
 // routes
