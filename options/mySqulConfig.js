@@ -1,4 +1,8 @@
-const path = require("path");
+import path from "path";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const options = {
   mariaDb: {
     client: "mysql",
@@ -16,4 +20,4 @@ const options = {
     },
   },
 };
-module.exports = options;
+export { options };

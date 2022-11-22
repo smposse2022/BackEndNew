@@ -1,5 +1,5 @@
-const options = require("../options/mySqulConfig");
-const knex = require("knex");
+import { options } from "../options/mySqulConfig.js";
+import knex from "knex";
 const dbmsql = knex(options.mariaDb);
 const dbsqlite = knex(options.sqliteDb);
 
