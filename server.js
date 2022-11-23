@@ -29,18 +29,8 @@ app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
 
-// routes
-//view routes
-app.get("/", async (req, res) => {
-  res.render("home");
-});
-
-app.get("/productos", async (req, res) => {
-  res.render("products", { products: await listaProductos.getAll() });
-});
-
 //api routes
-app.use("/api/products", productsRouter);
+app.use("/", productsRouter);
 
 //servidor de websocket y lo conectamos con el servidor de express
 const io = new Server(server);

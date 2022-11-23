@@ -1,14 +1,33 @@
 import express from "express";
 import { ContenedorSql } from "../managers/contenedorSql.js";
 import { options } from "../options/mySqulConfig.js";
+import { ProductsMock } from "../moks/products.js";
 
 const productsRouter = express.Router();
 
 const listaProductos = new ContenedorSql(options.mariaDb, "products");
+const productsRandom = new ProductsMock();
 
 productsRouter.get("/", async (req, res) => {
   const productos = await listaProductos.getAll();
-  res.send(productos);
+  console.log(productos);
+  res.render("home");
+});
+
+productsRouter.get("/productos", async (req, res) => {
+  res.render("products", { products: await listaProductos.getAll() });
+});
+
+// Rutas Moks
+// ?cant=5     - Query param
+productsRouter.post("/generar-productos", (req, res) => {
+  const { cant } = req.query;
+  let result = productsRandom.populate(parseInt(cant));
+  res.send(result);
+});
+
+productsRouter.get("/productos-test", (req, res) => {
+  res.render("productosTest", { products: productsRandom.getAll() });
 });
 
 productsRouter.get("/:id", async (req, res) => {
