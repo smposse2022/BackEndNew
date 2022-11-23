@@ -1,9 +1,11 @@
+import { json } from "express";
 import admin from "firebase-admin";
 import { readFileSync } from "fs";
 // generar llave para poder conectarnos de manera segura a nuestra app de Firebase
 // Vinculamos esa clave con nuestro serv principal
-const serviceAccount = JSON.parse(readFileSync("../FirebaseKey.json"));
-console.log(serviceAccount);
+//const serviceAccount = JSON.parse(readFileSync("../FirebaseKey.json"));
+//console.log(serviceAccount);
+import serviceAccount from "../FirebaseKey.json" assert { type: "json" };
 
 // Inicializamos Firebase
 admin.initializeApp({
