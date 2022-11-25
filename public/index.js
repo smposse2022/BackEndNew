@@ -55,7 +55,7 @@ socketClient.on("products", async (data) => {
 socketClient.on("messages", async (dataMsg) => {
   let messageElements = "";
   dataMsg.forEach((msg) => {
-    messageElements += `<div><strong>${msg.user} - ${msg.timestamp}:</strong> ${msg.message}</div>`;
+    messageElements += `<div><strong>${msg.username} - ${msg.timestamp}:</strong> ${msg.message}</div>`;
   });
   const chatContainer = document.getElementById("chatContainer");
   chatContainer.innerHTML = dataMsg.length > 0 ? messageElements : "";
@@ -73,3 +73,4 @@ chatButton.addEventListener("click", () => {
   });
   chatInput.value = "";
 });
+console.log(user);
