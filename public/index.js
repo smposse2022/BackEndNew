@@ -1,7 +1,7 @@
 const socketClient = io();
 //captura el nombre del usuario al ingresar
 let user;
-Swal.fire({
+/*Swal.fire({
   title: "Hola usuario",
   text: "bienvenido, ingresa tu usario",
   input: "text",
@@ -21,6 +21,44 @@ Swal.fire({
   document.getElementById(
     "userEmail"
   ).innerHTML = `<strong>Bienvenido ${respuesta.value}!!</strong>`;
+});*/
+Swal.fire({
+  title: "Formulario de Ingreso",
+  html: `<input type="text" id="mail" class="swal2-input" placeholder="Ingrese su Mail">
+  <input type="text" id="name" class="swal2-input" placeholder="Ingrese su Nombre">
+  <input type="text" id="lastName" class="swal2-input" placeholder="Ingrese su Apellido">
+  <input type="text" id="age" class="swal2-input" placeholder="Ingrese su Edad">
+  <input type="text" id="alias" class="swal2-input" placeholder="Ingrese su Alias">
+  <input type="text" id="avatar" class="swal2-input" placeholder="Ingrese su Avatar(foto, logo)">`,
+  confirmButtonText: "Sign in",
+  focusConfirm: false,
+  preConfirm: () => {
+    const mail = Swal.getPopup().querySelector("#mail").value;
+    const name = Swal.getPopup().querySelector("#name").value;
+    const lastName = Swal.getPopup().querySelector("#lastName").value;
+    const age = Swal.getPopup().querySelector("#age").value;
+    const alias = Swal.getPopup().querySelector("#alias").value;
+    const avatar = Swal.getPopup().querySelector("#avatar").value;
+
+    if (!mail || !name || !lastName || !age || !alias || !avatar) {
+      Swal.showValidationMessage(`Campos obligatorios`);
+    }
+    return { mail, name, lastName, age, alias, avatar };
+  },
+  allowOutsideClick: false,
+}).then((result) => {
+  Swal.fire(
+    `
+    Email: ${result.value.mail}
+    Nombre: ${result.value.name}
+    Apellido: ${result.value.lastName}
+    Edad: ${result.value.age}
+    Alias: ${result.value.alias}
+    Avatar: ${result.value.avatar}
+  `.trim()
+  );
+  user = result.value;
+  console.log(user);
 });
 
 //envio del formulario
@@ -67,10 +105,9 @@ const chatButton = document.getElementById("sendMsg");
 
 chatButton.addEventListener("click", () => {
   socketClient.emit("newMessage", {
-    username: user,
+    author: user,
+    text: chatInput.value,
     timestamp: new Date().toLocaleString(),
-    message: chatInput.value,
   });
   chatInput.value = "";
 });
-console.log(user);
