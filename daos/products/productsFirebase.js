@@ -1,4 +1,4 @@
-import { ContenedorFirebase } from "../../managers/contenedorFirebase.js";
+/*import { ContenedorFirebase } from "../../managers/contenedorFirebase.js";
 
 class ProductsDaoFirebase extends ContenedorFirebase {
   constructor(collection) {
@@ -6,4 +6,4 @@ class ProductsDaoFirebase extends ContenedorFirebase {
   }
 }
 
-export { ProductsDaoFirebase };
+export { ProductsDaoFirebase };*/

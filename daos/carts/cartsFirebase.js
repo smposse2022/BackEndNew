@@ -1,4 +1,4 @@
-import { ContenedorFirebase } from "../../managers/contenedorFirebase.js";
+/*import { ContenedorFirebase } from "../../managers/contenedorFirebase.js";
 
 class CartDaoFirebase extends ContenedorFirebase {
   constructor(collection) {
@@ -7,3 +7,4 @@ class CartDaoFirebase extends ContenedorFirebase {
 }
 
 export { CartDaoFirebase };
+*/

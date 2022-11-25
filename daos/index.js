@@ -10,7 +10,7 @@ let ContenedorDaoProductos;
 let ContenedorDaoCarritos;
 
 //identificador
-let databaseType = "firebase";
+let databaseType = "mongo";
 
 switch (databaseType) {
   case "archivos":
@@ -47,16 +47,14 @@ switch (databaseType) {
     ContenedorDaoProductos = new ProductsDaoMongo(productModel);
     ContenedorDaoCarritos = new CartDaoMongo(cartModel);
     break;
-  case "firebase":
+  /*case "firebase":
     const { ProductsDaoFirebase } = await import(
       "./products/productsFirebase.js"
     );
-    const { CartsDaoFirebase } = await import("./carts/cartsFirebase.js");
-    ContenedorDaoProductos = new ProductsDaoFirebase(
-      options.fileSystem.pathProducts
-    );
-    ContenedorDaoCarritos = new CartsDaoFirebase(options.fileSystem.pathCarts);
-    break;
+    const { CartDaoFirebase } = await import("./carts/cartsFirebase.js");
+    ContenedorDaoProductos = new ProductsDaoFirebase("Productos");
+    ContenedorDaoCarritos = new CartDaoFirebase("Carritos");
+    break;*/
 }
 
 export { ContenedorDaoProductos, ContenedorDaoCarritos };

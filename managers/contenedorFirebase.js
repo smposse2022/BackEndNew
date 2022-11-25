@@ -1,11 +1,11 @@
-import { json } from "express";
+/*import { json } from "express";
 import admin from "firebase-admin";
 import { readFileSync } from "fs";
 // generar llave para poder conectarnos de manera segura a nuestra app de Firebase
 // Vinculamos esa clave con nuestro serv principal
-//const serviceAccount = JSON.parse(readFileSync("../FirebaseKey.json"));
-//console.log(serviceAccount);
-import serviceAccount from "../FirebaseKey.json" assert { type: "json" };
+/*const serviceAccount = JSON.parse(readFileSync("../FirebaseKey.json"));
+console.log(serviceAccount);
+//import serviceAccount from "../FirebaseKey.json" assert { type: "json" };
 
 // Inicializamos Firebase
 admin.initializeApp({
@@ -22,13 +22,15 @@ export const cartCollection = db.collection("Carritos");
 
 class ContenedorFirebase {
   constructor(collection) {
-    this.collection = collection;
-    const doc = this.collection.doc();
+    this.collection = db.collection(collection);
+
+    //const doc = this.collection.doc();
   }
   getAll = async () => {
     // Ver, porque sólo lee los campos programados para productos, no Carrito
     try {
-      let response = await this.collection.get();
+      let response = await this.collection.doc().get();
+      console.log("hola", response);
       let docs = response.docs;
       let items = docs.map((doc) => ({
         id: doc.id,
@@ -93,3 +95,4 @@ class ContenedorFirebase {
 }
 
 export { ContenedorFirebase };
+*/

@@ -11,7 +11,7 @@ const productsRouter = express.Router();
 //products manager
 // const listaProductos = new ContenedorArchivos (options.fileSystem.pathProducts);
 // const listaProductos = new ContenedorMysql(options.sqliteDB, "productos");
-const listaProductos = ContenedorDaoProductos;
+export const listaProductos = ContenedorDaoProductos;
 
 productsRouter.get("/", async (req, res) => {
   const productos = await listaProductos.getAll();

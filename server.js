@@ -4,13 +4,21 @@ import { cartsRouter } from "./routes/cartRouter.js";
 import handlebars from "express-handlebars"; // no estoy seguro que esté bien
 import { Server } from "socket.io";
 import mongoose from "mongoose";
+import { ContenedorSql } from "./managers/contenedorSql.js";
+import { options } from "./options/mySqulConfig.js";
+import { fileURLToPath } from "url";
+import path from "path";
+import { listaProductos } from "./routes/productRouter.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 //const ContenedorSql = require("./managers/contenedorSql");
 //const ContenedorWebsocketSqlite = require("./managers/websocket");
 const PORT = process.env.PORT || 8080;
 
-//const listaProductos = new ContenedorSql(option.mariaDb, "products");
-//const chatWebsocket = new ContenedorSql(option.sqliteDb, "messages");
+//const listaProductos = new ContenedorSql(options.mariaDb, "products");
+const chatWebsocket = new ContenedorSql(options.sqliteDb, "messages");
 
 // Crear el servidor
 const app = express();
@@ -24,17 +32,13 @@ const server = app.listen(PORT, () => console.log(`listening on port ${PORT}`));
 
 //configuracion template engine handlebars
 app.engine("handlebars", handlebars.engine());
-app.set("views", "/views");
+app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
 
 // routes
 //view routes
 app.get("/", async (req, res) => {
   res.render("home");
-});
-
-app.get("/productos", async (req, res) => {
-  res.render("products", { products: await listaProductos.getAll() });
 });
 
 //router productos y carritos
@@ -50,7 +54,7 @@ io.on("connection", async (socket) => {
   console.log("nuevo usuario conectado", socket.id);
 
   //enviar todos los productos
-  socket.emit("products", await listaProductos.getAll());
+  //socket.emit("products", await listaProductos.getAll());
 
   //agrego el producto a la lista de productos
   socket.on("newProduct", async (data) => {

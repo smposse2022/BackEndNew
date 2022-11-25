@@ -2,10 +2,10 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { productModel } from "../mongo/models/productModel.js";
 import { cartModel } from "../mongo/models/cartModel.js";
-import {
+/*import {
   productCollection,
   cartCollection,
-} from "../managers/contenedorFirebase.js";
+} from "../managers/contenedorFirebase.js";*/
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -35,8 +35,8 @@ export const options = {
     pathProducts: productModel,
     pathCarts: cartModel,
   },
-  firebase: {
+  /*firebase: {
     pathProducts: productCollection,
     pathCarts: cartCollection,
-  },
+  },*/
 };
