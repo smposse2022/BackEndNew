@@ -1,10 +1,28 @@
 [
   {
-    "username": "Santi",
-    "message": "Hola"
+    "id": 1,
+    "author": {
+      "mail": "smposse@gmail.com",
+      "name": "Santiago",
+      "lastName": "Posse",
+      "age": "33",
+      "alias": "Santi",
+      "avatar": "foto"
+    },
+    "text": "Primer mensaje, de prueba",
+    "timestamp": "25/11/2022, 21:22:49"
   },
   {
-    "username": "Pedro",
-    "message": "Cómo va"
+    "id": 2,
+    "author": {
+      "mail": "pedroperez@gmail.com",
+      "name": "Pedro",
+      "lastName": "Perez",
+      "age": "45",
+      "alias": "Pedrito",
+      "avatar": "foto"
+    },
+    "text": "Segundo mensaje, pedro",
+    "timestamp": "25/11/2022, 21:27:17"
   }
 ]

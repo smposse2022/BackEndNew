@@ -1,27 +1,6 @@
 const socketClient = io();
 //captura el nombre del usuario al ingresar
 let user;
-/*Swal.fire({
-  title: "Hola usuario",
-  text: "bienvenido, ingresa tu usario",
-  input: "text",
-  customClass: {
-    validationMessage: "my-validation-message",
-  },
-  preConfirm: (value) => {
-    if (!value) {
-      Swal.showValidationMessage(
-        '<i class="fa fa-info-circle"></i>Nombre obligatorio'
-      );
-    }
-  },
-  allowOutsideClick: false,
-}).then((respuesta) => {
-  user = respuesta.value;
-  document.getElementById(
-    "userEmail"
-  ).innerHTML = `<strong>Bienvenido ${respuesta.value}!!</strong>`;
-});*/
 Swal.fire({
   title: "Formulario de Ingreso",
   html: `<input type="text" id="mail" class="swal2-input" placeholder="Ingrese su Mail">
@@ -57,8 +36,8 @@ Swal.fire({
     Avatar: ${result.value.avatar}
   `.trim()
   );
+  console.log(result.value);
   user = result.value;
-  console.log(user);
 });
 
 //envio del formulario
@@ -89,14 +68,39 @@ socketClient.on("products", async (data) => {
   productsContainer.innerHTML = htmlTable;
 });
 
+// esquemas del lado del frontend
+const authorSchema = new normalizr.schema.Entity(
+  "authors",
+  {},
+  { idAttribute: "mail" }
+);
+const messageSchema = new normalizr.schema.Entity("messages", {
+  author: authorSchema,
+});
+const chatSchema = new normalizr.schema.Entity(
+  "chat",
+  {
+    messages: [messageSchema],
+  },
+  { idAttribute: "id" }
+);
+
 //chat
 socketClient.on("messages", async (dataMsg) => {
+  // de-normalizamos la info
+  const normalData = normalizr.denormalize(
+    dataMsg.result,
+    chatSchema,
+    dataMsg.entities
+  );
+  //console.log("normalData", normalData);
   let messageElements = "";
-  dataMsg.forEach((msg) => {
-    messageElements += `<div><strong>${msg.username} - ${msg.timestamp}:</strong> ${msg.message}</div>`;
+  normalData.messages.forEach((msg) => {
+    messageElements += `<div><strong>${msg.author.name} - ${msg.timestamp}:</strong> ${msg.text}</div>`;
   });
   const chatContainer = document.getElementById("chatContainer");
-  chatContainer.innerHTML = dataMsg.length > 0 ? messageElements : "";
+  chatContainer.innerHTML =
+    normalData.messages.length > 0 ? messageElements : "";
 });
 
 //envio del mensaje del chat

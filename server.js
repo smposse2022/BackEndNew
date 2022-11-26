@@ -3,16 +3,19 @@ import { productsRouter } from "./routes/productRouter.js";
 import handlebars from "express-handlebars";
 import { Server } from "socket.io";
 import { ContenedorSql } from "./managers/contenedorSql.js";
+import { ContenedorChat } from "./managers/contenedorChat.js";
 //const ContenedorWebsocketSqlite = require("./managers/websocket");
 const PORT = process.env.PORT || 8080;
 import { options } from "./options/mySqulConfig.js";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
+import { normalize, schema } from "normalizr";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const listaProductos = new ContenedorSql(options.mariaDb, "products");
-const chatWebsocket = new ContenedorSql(options.sqliteDb, "messages");
+//const chatWebsocket = new ContenedorSql(options.sqliteDb, "messages");
+const chatWebsocket = new ContenedorChat("Messages.txt");
 
 // Crear el servidor
 const app = express();
@@ -28,6 +31,41 @@ const server = app.listen(PORT, () => console.log(`listening on port ${PORT}`));
 app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
+
+// normalización
+// creamos los schemas
+const authorSchema = new schema.Entity("authors", {}, { idAttribute: "mail" });
+
+const messageSchema = new schema.Entity("messages", {
+  author: authorSchema,
+});
+
+// nuevo objeto para el array-creamos el schema global
+const chatSchema = new schema.Entity(
+  "chat",
+  {
+    messages: [messageSchema],
+  },
+  { idAttribute: "id" }
+);
+
+// aplicar la normalización
+// creamos una función que normaliza la info, y la podemos llamar para normalizar los datos
+const normalizarData = (data) => {
+  const normalizeData = normalize(
+    { id: "chatHistory", messages: data },
+    chatSchema
+  );
+  return normalizeData;
+};
+
+// creamos una función que me entregue los mensajes normalizados
+const normalizarMensajes = async () => {
+  const result = await chatWebsocket.getAll();
+  const messagesNormalized = normalizarData(result);
+  //console.log(JSON.stringify(messagesNormalized, null, "\t"));
+  return messagesNormalized;
+};
 
 //api routes
 app.use("/", productsRouter);
@@ -52,11 +90,12 @@ io.on("connection", async (socket) => {
 
   //CHAT
   //Envio de todos los mensajes al socket que se conecta.
-  io.sockets.emit("messages", await chatWebsocket.getAll());
+  io.sockets.emit("messages", await normalizarMensajes());
 
   //recibimos el mensaje del usuario y lo guardamos en el archivo chat.txt
   socket.on("newMessage", async (newMsg) => {
     await chatWebsocket.save(newMsg);
-    io.sockets.emit("messages", await chatWebsocket.getAll());
+
+    io.sockets.emit("messages", await normalizarMensajes());
   });
 });
