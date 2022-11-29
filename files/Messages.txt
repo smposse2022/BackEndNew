@@ -24,5 +24,10 @@
     },
     "text": "Segundo mensaje, pedro",
     "timestamp": "25/11/2022, 21:27:17"
+  },
+  {
+    "id": 3,
+    "text": "Mensaje de prueba",
+    "timestamp": "29/11/2022, 18:12:43"
   }
 ]

@@ -14,6 +14,11 @@ productsRouter.get("/", async (req, res) => {
   res.render("home");
 });
 
+// Login Form
+productsRouter.get("/login", async (req, res) => {
+  res.render("login");
+});
+
 productsRouter.get("/productos", async (req, res) => {
   res.render("products", { products: await listaProductos.getAll() });
 });
