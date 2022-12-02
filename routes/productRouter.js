@@ -45,11 +45,11 @@ productsRouter.get("/:id", async (req, res) => {
   }
 });
 
-productsRouter.post("/", async (req, res) => {
+/*productsRouter.post("/", async (req, res) => {
   const newProduct = req.body;
   const result = await listaProductos.save(newProduct);
   res.send(result);
-});
+});*/
 
 productsRouter.put("/:id", async (req, res) => {
   const cambioObj = req.body;

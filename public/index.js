@@ -1,7 +1,7 @@
 const socketClient = io();
 //captura el nombre del usuario al ingresar
 let user;
-/*Swal.fire({
+Swal.fire({
   title: "Formulario de Ingreso",
   html: `<input type="text" id="mail" class="swal2-input" placeholder="Ingrese su Mail">
   <input type="text" id="name" class="swal2-input" placeholder="Ingrese su Nombre">
@@ -38,7 +38,7 @@ let user;
   );
   console.log(result.value);
   user = result.value;
-});*/
+});
 
 //envio del formulario
 const productForm = document.getElementById("form");
@@ -115,39 +115,3 @@ chatButton.addEventListener("click", () => {
   });
   chatInput.value = "";
 });
-
-// Login form
-const loginButton = document.getElementById("login_button");
-loginButton
-  .addEventListener(
-    ("submit",
-    (evt) => {
-      evt.preventDefault();
-
-      const mail = document.getElementById("mail").value;
-      const name = document.getElementById("name").value;
-      const lastName = document.getElementById("lastName").value;
-      const age = document.getElementById("age").value;
-      const alias = document.getElementById("alias").value;
-      const avatar = document.getElementById("avatar").value;
-
-      if (!mail || !name || !lastName || !age || !alias || !avatar) {
-        Swal.showValidationMessage(`Campos obligatorios`);
-      }
-      return { mail, name, lastName, age, alias, avatar };
-    })
-  )
-
-  .then((result) => {
-    `
-    Email: ${result.value.mail}
-    Nombre: ${result.value.name}
-    Apellido: ${result.value.lastName}
-    Edad: ${result.value.age}
-    Alias: ${result.value.alias}
-    Avatar: ${result.value.avatar}
-  `.trim();
-
-    console.log(result.value);
-    user = result.value;
-  });

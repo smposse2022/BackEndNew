@@ -9,25 +9,7 @@
       "alias": "Santi",
       "avatar": "foto"
     },
-    "text": "Primer mensaje, de prueba",
-    "timestamp": "25/11/2022, 21:22:49"
-  },
-  {
-    "id": 2,
-    "author": {
-      "mail": "pedroperez@gmail.com",
-      "name": "Pedro",
-      "lastName": "Perez",
-      "age": "45",
-      "alias": "Pedrito",
-      "avatar": "foto"
-    },
-    "text": "Segundo mensaje, pedro",
-    "timestamp": "25/11/2022, 21:27:17"
-  },
-  {
-    "id": 3,
-    "text": "Mensaje de prueba",
-    "timestamp": "29/11/2022, 18:12:43"
+    "text": "Mensaje 1, de prueba",
+    "timestamp": "30/11/2022, 18:43:23"
   }
 ]

@@ -10,6 +10,9 @@ import { options } from "./options/mySqulConfig.js";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { normalize, schema } from "normalizr";
+import session from "express-session";
+import cookieParser from "cookie-parser";
+import MongoStore from "connect-mongo";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -31,6 +34,24 @@ const server = app.listen(PORT, () => console.log(`listening on port ${PORT}`));
 app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
+
+// configurando almacenamiento de sessions en Mongo Atlas
+app.use(cookieParser());
+
+app.use(
+  session({
+    store: MongoStore.create({
+      mongoUrl:
+        "mongodb+srv://smposse:coderMongo2022@cluster0.94d5car.mongodb.net/sessionsDB?retryWrites=true&w=majority",
+    }),
+    secret: "claveSecreta",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 600000,
+    },
+  })
+);
 
 // normalización
 // creamos los schemas
