@@ -28,22 +28,24 @@ productsRouter.get("/login", async (req, res) => {
 });
 
 productsRouter.post("/login", async (req, res) => {
-  const { user } = req.body;
+  const { username } = req.body;
   console.log(req.body);
   if (req.session.username) {
-    return res.redirect("/perfil");
+    return res.redirect("/");
   } else {
-    if (user) {
-      req.session.username = user;
-      res.send("sesion iniciada");
+    if (username) {
+      req.session.username = username;
+      res.redirect("/");
     } else {
       res.send("por favor ingresa el usuario");
     }
   }
 });
-productsRouter.get("/perfil", checkUserLogged, (req, res) => {
-  console.log(req.session);
-  res.send(`Bienvenido ${req.session.username}`);
+
+productsRouter.get("/logout", (req, res) => {
+  req.session.destroy();
+  res.send("sesion finalizada");
+  res.redirect("/");
 });
 
 productsRouter.get("/productos", async (req, res) => {
@@ -71,12 +73,6 @@ productsRouter.get("/:id", checkUserLogged, async (req, res) => {
     return res.send({ error: "producto no encontrado" });
   }
 });
-
-/*productsRouter.post("/", async (req, res) => {
-  const newProduct = req.body;
-  const result = await listaProductos.save(newProduct);
-  res.send(result);
-});*/
 
 productsRouter.put("/:id", checkUserLogged, async (req, res) => {
   const cambioObj = req.body;

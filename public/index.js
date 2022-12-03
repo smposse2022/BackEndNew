@@ -39,6 +39,8 @@ Swal.fire({
   console.log(result.value);
   user = result.value;
 });
+const userName = document.getElementById("userName");
+//userName.innerHTML = `<strong>Bienvenido ${username}!!</strong>`;
 
 //envio del formulario
 const productForm = document.getElementById("form");

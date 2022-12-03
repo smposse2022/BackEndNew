@@ -3,7 +3,7 @@ const loginButton = document.getElementById("login_button");
 loginButton.addEventListener("submit", (evt) => {
   evt.preventDefault();
 
-  const login = document.getElementById("login").value;
+  const login = document.getElementById("username").value;
 
   if (!login) {
     Swal.fire({
