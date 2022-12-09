@@ -1,8 +1,10 @@
 <div class="mx-5 my-2">
     <h1>Home</h1>
     <div class="d-flex justify-content-between">
-      <p id="userName"></p>
-      <a class="btn btn-primary mb-2"href="http://localhost:8080/logout">Desloguear</a>
+        {{#if user}}
+        <p>{{user}}</p>
+        {{/if}}
+      <a class="btn btn-primary mb-2" href="/logout">Desloguear</a>
     </div>
     {{> form}}
 

@@ -13,18 +13,33 @@ import { normalize, schema } from "normalizr";
 import session from "express-session";
 import cookieParser from "cookie-parser";
 import MongoStore from "connect-mongo";
+import passport from "passport";
+import mongoose from "mongoose"; //db usuarios
+import { UserModel } from "./models/user.js";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+//conectamos a la base de datos
+const mongoUrl =
+  "mongodb+srv://smposse:coderMongo2022@cluster0.94d5car.mongodb.net/authDB?retryWrites=true&w=majority";
 
-const listaProductos = new ContenedorSql(options.mariaDb, "products");
-//const chatWebsocket = new ContenedorSql(options.sqliteDb, "messages");
-const chatWebsocket = new ContenedorChat("Messages.txt");
+mongoose.connect(
+  mongoUrl,
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  },
+  (error) => {
+    if (error)
+      return console.log(`Hubo un error conectandose a la base ${error}`);
+    console.log("conexion a la base de datos de manera exitosa");
+  }
+);
 
 // Crear el servidor
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 //trabajar con archivos estaticos de public
+const __dirname = dirname(fileURLToPath(import.meta.url));
 app.use(express.static(__dirname + "/public"));
 
 //servidor de express
@@ -35,11 +50,16 @@ app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars");
 
+export const listaProductos = new ContenedorSql(options.mariaDb, "products");
+//const chatWebsocket = new ContenedorSql(options.sqliteDb, "messages");
+export const chatWebsocket = new ContenedorChat("Messages.txt");
+
 // configurando almacenamiento de sessions en Mongo Atlas
 app.use(cookieParser());
 
 app.use(
   session({
+    //definimos el session store
     store: MongoStore.create({
       mongoUrl:
         "mongodb+srv://smposse:coderMongo2022@cluster0.94d5car.mongodb.net/sessionsDB?retryWrites=true&w=majority",
@@ -52,6 +72,26 @@ app.use(
     },
   })
 );
+
+//configurar passport
+app.use(passport.initialize()); //conectamos a passport con express.
+app.use(passport.session()); //vinculacion entre passport y las sesiones de nuestros usuarios.
+
+//api routes
+app.use("/", productsRouter);
+
+//serializar un usuario
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+//deserializar al usuario
+passport.deserializeUser((id, done) => {
+  //validar si el usuario existe en db.
+  UserModel.findById(id, (err, userFound) => {
+    return done(err, userFound);
+  });
+});
 
 // normalización
 // creamos los schemas
@@ -88,12 +128,8 @@ const normalizarMensajes = async () => {
   return messagesNormalized;
 };
 
-//api routes
-app.use("/", productsRouter);
-
 //servidor de websocket y lo conectamos con el servidor de express
 const io = new Server(server);
-//let historicosMensajes = [];
 
 //socket
 io.on("connection", async (socket) => {
