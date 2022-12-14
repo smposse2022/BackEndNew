@@ -26,7 +26,7 @@ class ContenedorMemoria {
     try {
       this.items = [];
     } catch (error) {
-      console.log(error);
+      return error;
     }
   };
 }

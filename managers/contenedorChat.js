@@ -21,7 +21,6 @@ class ContenedorChat {
             ...chatObj,
           };
           messages.push(newMsg);
-          console.log("messages", messages);
           await fs.promises.writeFile(
             this.filename,
             JSON.stringify(messages, null, 2)

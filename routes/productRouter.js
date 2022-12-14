@@ -100,15 +100,17 @@ passport.use(
 productsRouter.get("/", async (req, res) => {
   const productos = await listaProductos.getAll();
   const messages = await chatWebsocket.getAll();
-  console.log("User", req.session.passport.user);
-  res.render("home", {
-    user: `Bienvenido ${req.session.passport.user.name}!!`,
-  });
+  if (req.session.passport) {
+    const usuario = await UserModel.findOne({ _id: req.session.passport.user });
+    res.render("home", { user: usuario.name });
+  } else {
+    res.render("home", { user: "Invitado" });
+  }
 });
 
 productsRouter.get("/registro", (req, res) => {
   if (req.isAuthenticated()) {
-    res.render("profile");
+    res.redirect("/");
   } else {
     const errorMessage = req.session.messages ? req.session.messages[0] : "";
     res.render("signup", { error: errorMessage });
@@ -118,7 +120,7 @@ productsRouter.get("/registro", (req, res) => {
 
 productsRouter.get("/inicio-sesion", (req, res) => {
   if (req.isAuthenticated()) {
-    res.render("profile");
+    res.redirect("/");
   } else {
     res.render("login");
   }

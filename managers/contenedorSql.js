@@ -12,17 +12,16 @@ class ContenedorSql {
       const result = data.map((elm) => ({ ...elm }));
       return result;
     } catch (error) {
-      console.log(error);
+      return error;
     }
   };
 
   save = async (newItem) => {
     try {
-      console.log(newItem);
       await this.database.from(this.tableName).insert(newItem);
       return `new item saved with id:`;
     } catch (error) {
-      console.log(error);
+      return error;
     }
   };
 
@@ -35,7 +34,7 @@ class ContenedorSql {
           console.log(productoElegido);
         })*/
     } catch (error) {
-      console.log(error);
+      return error;
     }
   };
 
@@ -47,7 +46,7 @@ class ContenedorSql {
         .del();
       return itemsSinElEliminado;
     } catch (error) {
-      console.log(error);
+      return error;
     }
   };
 
@@ -55,7 +54,7 @@ class ContenedorSql {
     try {
       await this.database.from(this.tableName).select("*").del();
     } catch (error) {
-      console.log(error);
+      return error;
     }
   };
 
@@ -66,7 +65,7 @@ class ContenedorSql {
         .where("id", id)
         .update({ body: body });
     } catch (error) {
-      console.log(error);
+      return error;
     }
   };
 }

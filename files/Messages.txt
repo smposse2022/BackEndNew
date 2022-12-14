@@ -1,15 +1,8 @@
 [
   {
     "id": 1,
-    "author": {
-      "mail": "smposse@gmail.com",
-      "name": "Santiago",
-      "lastName": "Posse",
-      "age": "33",
-      "alias": "Santi",
-      "avatar": "foto"
-    },
-    "text": "Mensaje 1, de prueba",
-    "timestamp": "30/11/2022, 18:43:23"
+    "username": "Santiago",
+    "timestamp": "14/12/2022, 17:29:44",
+    "message": "Hola"
   }
 ]

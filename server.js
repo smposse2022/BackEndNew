@@ -93,7 +93,7 @@ passport.deserializeUser((id, done) => {
   });
 });
 
-// normalización
+/*// normalización
 // creamos los schemas
 const authorSchema = new schema.Entity("authors", {}, { idAttribute: "mail" });
 
@@ -127,7 +127,7 @@ const normalizarMensajes = async () => {
   //console.log(JSON.stringify(messagesNormalized, null, "\t"));
   return messagesNormalized;
 };
-
+*/
 //servidor de websocket y lo conectamos con el servidor de express
 const io = new Server(server);
 
@@ -147,12 +147,12 @@ io.on("connection", async (socket) => {
 
   //CHAT
   //Envio de todos los mensajes al socket que se conecta.
-  io.sockets.emit("messages", await normalizarMensajes());
+  io.sockets.emit("messages", await chatWebsocket.getAll());
 
   //recibimos el mensaje del usuario y lo guardamos en el archivo chat.txt
   socket.on("newMessage", async (newMsg) => {
     await chatWebsocket.save(newMsg);
 
-    io.sockets.emit("messages", await normalizarMensajes());
+    io.sockets.emit("messages", await chatWebsocket.getAll());
   });
 });
