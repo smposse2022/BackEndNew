@@ -5,21 +5,26 @@ import { Server } from "socket.io";
 import { ContenedorSql } from "./managers/contenedorSql.js";
 import { ContenedorChat } from "./managers/contenedorChat.js";
 //const ContenedorWebsocketSqlite = require("./managers/websocket");
-const PORT = process.env.PORT || 8080;
 import { options } from "./options/mySqulConfig.js";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-import { normalize, schema } from "normalizr";
+//import { normalize, schema } from "normalizr";
 import session from "express-session";
 import cookieParser from "cookie-parser";
 import MongoStore from "connect-mongo";
 import passport from "passport";
 import mongoose from "mongoose"; //db usuarios
 import { UserModel } from "./models/user.js";
+import { config } from "./config.js";
+import parsedArgs from "minimist";
+//const PORT = 8080;
+// Minimist
+const optionsMinimist = { default: { p: 8080 }, alias: { p: "PORT" } };
+const objArguments = parsedArgs(process.argv.slice(2), optionsMinimist);
+const PORT = objArguments.PORT;
 
 //conectamos a la base de datos
-const mongoUrl =
-  "mongodb+srv://smposse:coderMongo2022@cluster0.94d5car.mongodb.net/authDB?retryWrites=true&w=majority";
+const mongoUrl = config.MONGO_URL;
 
 mongoose.connect(
   mongoUrl,
@@ -61,10 +66,9 @@ app.use(
   session({
     //definimos el session store
     store: MongoStore.create({
-      mongoUrl:
-        "mongodb+srv://smposse:coderMongo2022@cluster0.94d5car.mongodb.net/sessionsDB?retryWrites=true&w=majority",
+      mongoUrl: config.MONGO_URL_SESSIONS,
     }),
-    secret: "claveSecreta",
+    secret: config.MONGO_SESSIONS_CLAVE_SECRETA,
     resave: false,
     saveUninitialized: false,
     cookie: {

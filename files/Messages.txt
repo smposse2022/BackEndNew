@@ -1,8 +1,1 @@
-[
-  {
-    "id": 1,
-    "username": "Santiago",
-    "timestamp": "14/12/2022, 17:29:44",
-    "message": "Hola"
-  }
-]
+[]
