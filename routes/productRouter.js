@@ -8,6 +8,7 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local"; //estrategia para autenticar por correo y password.
 import { UserModel } from "../models/user.js";
 import bcrypt from "bcrypt"; //encriptar las contrase;as
+import { fork } from "child_process";
 
 const productsRouter = express.Router();
 
@@ -191,6 +192,42 @@ productsRouter.get("/logout", (req, res) => {
   req.session.destroy();
   res.send("sesion finalizada");
   res.redirect("/");
+});
+
+// Ruta contar numeros No bloqueante
+// ?cant=x     - Query param
+productsRouter.get("/randoms", (req, res) => {
+  const { cant } = req.query;
+  const child = fork("./child.js");
+  //recibimos mensajes del proceso hijo
+  child.on("message", (childMsg) => {
+    if (childMsg === "listo") {
+      //recibimos notificacion del proceso hijo, y le mandamos un mensaje para que comience a operar.
+      child.send({ message: "Iniciar", cant: cant });
+    } else {
+      child.json({ resultado: childMsg });
+    }
+  });
+});
+
+// Ruta info - process
+productsRouter.get("/info", (req, res) => {
+  const argumentosDeEntrada = process.cwd();
+  const plataforma = process.platform;
+  const nodeVersion = process.version;
+  const memory = process.memoryUsage();
+  const path = process.argv[0];
+  const id = process.pid;
+  const carpeta = process.argv[1];
+  res.send(
+    `Argumentos de entrada: ${argumentosDeEntrada}
+     Plataforma: ${plataforma}
+     Versión de Node: ${nodeVersion}
+     Memoria total reservada: ${memory}
+     Path de ejecución: ${path}
+     Process id: ${id}
+     Carpeta del proyecto: ${carpeta}`
+  );
 });
 
 // Rutas Moks

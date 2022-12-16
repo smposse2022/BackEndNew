@@ -6,7 +6,6 @@ const productForm = document.getElementById("form");
 productForm.addEventListener("submit", (evt) => {
   if (usuario.innerText == "Invitado") {
     evt.preventDefault();
-
     Swal.fire({
       icon: "error",
       title: "Oops...",

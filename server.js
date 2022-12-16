@@ -22,6 +22,8 @@ import parsedArgs from "minimist";
 const optionsMinimist = { default: { p: 8080 }, alias: { p: "PORT" } };
 const objArguments = parsedArgs(process.argv.slice(2), optionsMinimist);
 const PORT = objArguments.PORT;
+const argumentos = process.argv.slice(2);
+console.log(argumentos);
 
 //conectamos a la base de datos
 const mongoUrl = config.MONGO_URL;
