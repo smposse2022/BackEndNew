@@ -212,22 +212,16 @@ productsRouter.get("/randoms", (req, res) => {
 
 // Ruta info - process
 productsRouter.get("/info", (req, res) => {
-  const argumentosDeEntrada = process.cwd();
-  const plataforma = process.platform;
-  const nodeVersion = process.version;
-  const memory = process.memoryUsage();
-  const path = process.argv[0];
-  const id = process.pid;
-  const carpeta = process.argv[1];
-  res.send(
-    `Argumentos de entrada: ${argumentosDeEntrada}
-     Plataforma: ${plataforma}
-     Versión de Node: ${nodeVersion}
-     Memoria total reservada: ${memory}
-     Path de ejecución: ${path}
-     Process id: ${id}
-     Carpeta del proyecto: ${carpeta}`
-  );
+  const info = {
+    argumentosDeEntrada: process.cwd(),
+    plataforma: process.platform,
+    nodeVersion: process.version,
+    memory: process.memoryUsage(),
+    path: process.argv[0],
+    id: process.pid,
+    carpeta: process.argv[1],
+  };
+  res.status(200).json(info);
 });
 
 // Rutas Moks
