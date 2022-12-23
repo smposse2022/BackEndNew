@@ -19,7 +19,10 @@ import { config } from "./config.js";
 import parsedArgs from "minimist";
 //const PORT = 8080;
 // Minimist
-const optionsMinimist = { default: { p: 8080 }, alias: { p: "PORT" } };
+const optionsMinimist = {
+  default: { PORT: 8080, mode: "FORK" },
+  alias: { p: "PORT", m: "mode" },
+};
 const objArguments = parsedArgs(process.argv.slice(2), optionsMinimist);
 const PORT = objArguments.PORT;
 const argumentos = process.argv.slice(2);
