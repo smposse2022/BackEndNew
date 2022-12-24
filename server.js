@@ -15,21 +15,32 @@ import MongoStore from "connect-mongo";
 import passport from "passport";
 import mongoose from "mongoose"; //db usuarios
 import { UserModel } from "./models/user.js";
-import { config } from "./config.js";
+//import { config } from "./config.js";
 import parsedArgs from "minimist";
-//const PORT = 8080;
+import cluster from "cluster";
+import os from "os";
+
 // Minimist
-const optionsMinimist = { default: { p: 8080 }, alias: { p: "PORT" } };
+const optionsMinimist = {
+  default: { p: 8080, m: "FORK" },
+  alias: { p: "PORT", m: "mode" },
+};
 const objArguments = parsedArgs(process.argv.slice(2), optionsMinimist);
 const PORT = objArguments.PORT;
-const argumentos = process.argv.slice(2);
-console.log(argumentos);
+const MODO = objArguments.mode;
+console.log(objArguments);
+
+// Crear el servidor
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+//trabajar con archivos estaticos de public
+const __dirname = dirname(fileURLToPath(import.meta.url));
+app.use(express.static(__dirname + "/public"));
 
 //conectamos a la base de datos
-const mongoUrl = config.MONGO_URL;
-
 mongoose.connect(
-  mongoUrl,
+  "mongodb+srv://smposse:coderMongo2022@cluster0.94d5car.mongodb.net/authDB?retryWrites=true&w=majority",
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -40,17 +51,51 @@ mongoose.connect(
     console.log("conexion a la base de datos de manera exitosa");
   }
 );
+// lógica Modos Fork y Cluster
+if (MODO == "CLUSTER" && cluster.isPrimary) {
+  // si el modo el CLUSTER y si el cluster pertenece al proceso principal
+  // creamos los subprocesos que van a pertenecer a ese modo cluster
+  const numCpus = os.cpus().length; // número de núcleos del procesador
+  for (let i = 0; i < numCpus; i++) {
+    cluster.fork(); // crea los subprocesos
+  }
+  cluster.on("exit", (worker) => {
+    console.log(`El subproceso ${worker.process.pid} dejó de funcionar`);
+    cluster.fork();
+  });
+} else {
+  //servidor de express
+  const server = app.listen(PORT, () =>
+    console.log(`listening on port ${PORT} on process ${process.pid}`)
+  );
+  const io = new Server(server);
 
-// Crear el servidor
-const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-//trabajar con archivos estaticos de public
-const __dirname = dirname(fileURLToPath(import.meta.url));
-app.use(express.static(__dirname + "/public"));
+  //socket
+  io.on("connection", async (socket) => {
+    console.log("nuevo usuario conectado", socket.id);
 
-//servidor de express
-const server = app.listen(PORT, () => console.log(`listening on port ${PORT}`));
+    //enviar todos los productos
+    socket.emit("products", await listaProductos.getAll());
+
+    //agrego el producto a la lista de productos
+    socket.on("newProduct", async (data) => {
+      await listaProductos.save(data);
+      //envío la lista de productos actualizada a todos los sockets
+      io.sockets.emit("products", await listaProductos.getAll());
+    });
+
+    //CHAT
+    //Envio de todos los mensajes al socket que se conecta.
+    io.sockets.emit("messages", await chatWebsocket.getAll());
+
+    //recibimos el mensaje del usuario y lo guardamos en el archivo chat.txt
+    socket.on("newMessage", async (newMsg) => {
+      await chatWebsocket.save(newMsg);
+
+      io.sockets.emit("messages", await chatWebsocket.getAll());
+    });
+  });
+}
 
 //configuracion template engine handlebars
 app.engine("handlebars", handlebars.engine());
@@ -68,9 +113,10 @@ app.use(
   session({
     //definimos el session store
     store: MongoStore.create({
-      mongoUrl: config.MONGO_URL_SESSIONS,
+      mongoUrl:
+        "mongodb+srv://smposse:coderMongo2022@cluster0.94d5car.mongodb.net/sessionsDB?retryWrites=true&w=majority",
     }),
-    secret: config.MONGO_SESSIONS_CLAVE_SECRETA,
+    secret: "claveSecreta",
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -135,30 +181,3 @@ const normalizarMensajes = async () => {
 };
 */
 //servidor de websocket y lo conectamos con el servidor de express
-const io = new Server(server);
-
-//socket
-io.on("connection", async (socket) => {
-  console.log("nuevo usuario conectado", socket.id);
-
-  //enviar todos los productos
-  socket.emit("products", await listaProductos.getAll());
-
-  //agrego el producto a la lista de productos
-  socket.on("newProduct", async (data) => {
-    await listaProductos.save(data);
-    //envío la lista de productos actualizada a todos los sockets
-    io.sockets.emit("products", await listaProductos.getAll());
-  });
-
-  //CHAT
-  //Envio de todos los mensajes al socket que se conecta.
-  io.sockets.emit("messages", await chatWebsocket.getAll());
-
-  //recibimos el mensaje del usuario y lo guardamos en el archivo chat.txt
-  socket.on("newMessage", async (newMsg) => {
-    await chatWebsocket.save(newMsg);
-
-    io.sockets.emit("messages", await chatWebsocket.getAll());
-  });
-});

@@ -197,15 +197,22 @@ productsRouter.get("/logout", (req, res) => {
 // Ruta contar numeros No bloqueante
 // ?cant=x     - Query param
 productsRouter.get("/randoms", (req, res) => {
-  const { cant } = req.query;
+  let { cant } = req.query;
+  if (!cant) {
+    cant = 1000000;
+  }
+  if (cant < 1 || cant > 1e10) {
+    res.send("Debe ingresar por parámetro un valor entre 1 y 10.000.000.000");
+  }
   const child = fork("./child.js");
+  console.log(cant);
   //recibimos mensajes del proceso hijo
   child.on("message", (childMsg) => {
     if (childMsg === "listo") {
       //recibimos notificacion del proceso hijo, y le mandamos un mensaje para que comience a operar.
       child.send({ message: "Iniciar", cant: cant });
     } else {
-      child.json({ resultado: childMsg });
+      res.send({ resultado: childMsg });
     }
   });
 });
