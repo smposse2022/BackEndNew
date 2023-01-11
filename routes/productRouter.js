@@ -9,6 +9,7 @@ import { Strategy as LocalStrategy } from "passport-local"; //estrategia para au
 import { UserModel } from "../models/user.js";
 import bcrypt from "bcrypt"; //encriptar las contrase;as
 import { fork } from "child_process";
+import compression from "compression";
 
 const productsRouter = express.Router();
 
@@ -219,6 +220,20 @@ productsRouter.get("/randoms", (req, res) => {
 
 // Ruta info - process
 productsRouter.get("/info", (req, res) => {
+  const info = {
+    argumentosDeEntrada: process.cwd(),
+    plataforma: process.platform,
+    nodeVersion: process.version,
+    memory: process.memoryUsage(),
+    path: process.argv[0],
+    id: process.pid,
+    carpeta: process.argv[1],
+  };
+  res.status(200).json(info);
+});
+
+// Ruta info Compression
+productsRouter.get("/infoCompression", compression(), (req, res) => {
   const info = {
     argumentosDeEntrada: process.cwd(),
     plataforma: process.platform,

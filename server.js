@@ -15,7 +15,7 @@ import MongoStore from "connect-mongo";
 import passport from "passport";
 import mongoose from "mongoose"; //db usuarios
 import { UserModel } from "./models/user.js";
-//import { config } from "./config.js";
+import { config } from "./config.js";
 import parsedArgs from "minimist";
 import cluster from "cluster";
 import os from "os";
@@ -40,7 +40,7 @@ app.use(express.static(__dirname + "/public"));
 
 //conectamos a la base de datos
 mongoose.connect(
-  "mongodb+srv://smposse:coderMongo2022@cluster0.94d5car.mongodb.net/authDB?retryWrites=true&w=majority",
+  config.MONGO_URL,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -113,10 +113,9 @@ app.use(
   session({
     //definimos el session store
     store: MongoStore.create({
-      mongoUrl:
-        "mongodb+srv://smposse:coderMongo2022@cluster0.94d5car.mongodb.net/sessionsDB?retryWrites=true&w=majority",
+      mongoUrl: config.MONGO_URL_SESSIONS,
     }),
-    secret: "claveSecreta",
+    secret: config.MONGO_SESSIONS_CLAVE_SECRETA,
     resave: false,
     saveUninitialized: false,
     cookie: {
