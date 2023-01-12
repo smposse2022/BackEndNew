@@ -1,3 +1,5 @@
+import { logger } from "../logger.js";
+
 const socketClient = io();
 const usuario = document.getElementById("usuario");
 
@@ -6,6 +8,7 @@ const productForm = document.getElementById("form");
 productForm.addEventListener("submit", (evt) => {
   if (usuario.innerText == "Invitado") {
     evt.preventDefault();
+    logger.error("Usuario intenta cargar productos sin estar logueado");
     Swal.fire({
       icon: "error",
       title: "Oops...",
@@ -92,6 +95,7 @@ const chatButton = document.getElementById("sendMsg");
 
 chatButton.addEventListener("click", () => {
   if (usuario.innerText == "Invitado") {
+    logger.error("Usuario intenta usar el chat sin estar logueado");
     Swal.fire({
       icon: "error",
       title: "Oops...",

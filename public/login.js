@@ -1,3 +1,4 @@
+import { logger } from "../logger";
 // Login form
 const loginButton = document.getElementById("login_button");
 loginButton.addEventListener("submit", (evt) => {
@@ -6,6 +7,7 @@ loginButton.addEventListener("submit", (evt) => {
   const login = document.getElementById("username").value;
 
   if (!login) {
+    logger.error("Usuario no ingresó nombre");
     Swal.fire({
       icon: "error",
       title: "Oops...",

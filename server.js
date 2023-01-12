@@ -15,10 +15,11 @@ import MongoStore from "connect-mongo";
 import passport from "passport";
 import mongoose from "mongoose"; //db usuarios
 import { UserModel } from "./models/user.js";
-import { config } from "./config.js";
+//import { config } from "./config.js";
 import parsedArgs from "minimist";
 import cluster from "cluster";
 import os from "os";
+import { logger } from "./logger.js";
 
 // Minimist
 const optionsMinimist = {
@@ -28,7 +29,7 @@ const optionsMinimist = {
 const objArguments = parsedArgs(process.argv.slice(2), optionsMinimist);
 const PORT = objArguments.PORT;
 const MODO = objArguments.mode;
-console.log(objArguments);
+//console.log(objArguments);
 
 // Crear el servidor
 const app = express();
@@ -40,15 +41,15 @@ app.use(express.static(__dirname + "/public"));
 
 //conectamos a la base de datos
 mongoose.connect(
-  config.MONGO_URL,
+  "mongodb+srv://smposse:coderMongo2022@cluster0.94d5car.mongodb.net/authDB?retryWrites=true&w=majority",
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   },
   (error) => {
     if (error)
-      return console.log(`Hubo un error conectandose a la base ${error}`);
-    console.log("conexion a la base de datos de manera exitosa");
+      return logger.error(`Hubo un error conectandose a la base ${error}`);
+    logger.info("conexion a la base de datos de manera exitosa");
   }
 );
 // lógica Modos Fork y Cluster
@@ -60,19 +61,19 @@ if (MODO == "CLUSTER" && cluster.isPrimary) {
     cluster.fork(); // crea los subprocesos
   }
   cluster.on("exit", (worker) => {
-    console.log(`El subproceso ${worker.process.pid} dejó de funcionar`);
+    logger.info(`El subproceso ${worker.process.pid} dejó de funcionar`);
     cluster.fork();
   });
 } else {
   //servidor de express
   const server = app.listen(PORT, () =>
-    console.log(`listening on port ${PORT} on process ${process.pid}`)
+    logger.info(`listening on port ${PORT} on process ${process.pid}`)
   );
   const io = new Server(server);
 
   //socket
   io.on("connection", async (socket) => {
-    console.log("nuevo usuario conectado", socket.id);
+    logger.info("nuevo usuario conectado", socket.id);
 
     //enviar todos los productos
     socket.emit("products", await listaProductos.getAll());
@@ -113,9 +114,10 @@ app.use(
   session({
     //definimos el session store
     store: MongoStore.create({
-      mongoUrl: config.MONGO_URL_SESSIONS,
+      mongoUrl:
+        "mongodb+srv://smposse:coderMongo2022@cluster0.94d5car.mongodb.net/sessionsDB?retryWrites=true&w=majority",
     }),
-    secret: config.MONGO_SESSIONS_CLAVE_SECRETA,
+    secret: "claveSecreta",
     resave: false,
     saveUninitialized: false,
     cookie: {

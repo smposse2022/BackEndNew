@@ -10,6 +10,7 @@ import { UserModel } from "../models/user.js";
 import bcrypt from "bcrypt"; //encriptar las contrase;as
 import { fork } from "child_process";
 import compression from "compression";
+import { logger } from "../logger.js";
 
 const productsRouter = express.Router();
 
@@ -80,14 +81,14 @@ passport.use(
         if (err) return done(err);
         // Si no se encuentra
         if (!user) {
-          console.log("No se encontró el usuario con el username " + username);
+          logger.info("No se encontró el usuario con el username " + username);
           return done(err, null, {
             message: "Usuario no encontrado",
           });
         }
         // El usuario existe pero la contraseña no coincide
         if (!isValidPassword(user, password)) {
-          console.log("Password invalido");
+          logger.info("Password invalido");
           return done(err, null, {
             message: "Password invalido",
           });
@@ -104,17 +105,21 @@ productsRouter.get("/", async (req, res) => {
   const messages = await chatWebsocket.getAll();
   if (req.session.passport) {
     const usuario = await UserModel.findOne({ _id: req.session.passport.user });
+    logger.info("Acceso a ruta home con usuario registrado");
     res.render("home", { user: usuario.name });
   } else {
+    logger.info("Acceso a ruta home sin usuario registrado");
     res.render("home", { user: "Invitado" });
   }
 });
 
 productsRouter.get("/registro", (req, res) => {
   if (req.isAuthenticated()) {
+    logger.info("Redirigido a home");
     res.redirect("/");
   } else {
     const errorMessage = req.session.messages ? req.session.messages[0] : "";
+    logger.info("Redirigido a Signup");
     res.render("signup", { error: errorMessage });
     req.session.messages = [];
   }
@@ -122,15 +127,17 @@ productsRouter.get("/registro", (req, res) => {
 
 productsRouter.get("/inicio-sesion", (req, res) => {
   if (req.isAuthenticated()) {
+    logger.info("Redirigido a home");
     res.redirect("/");
   } else {
+    logger.info("Redirigido a login");
     res.render("login");
   }
 });
 
 productsRouter.get("/perfil", (req, res) => {
-  console.log(req.session);
   if (req.isAuthenticated()) {
+    logger.info("Acceso a perfil");
     res.render("profile");
   } else {
     res.send(
@@ -147,6 +154,7 @@ productsRouter.post(
     failureMessage: true, //req.sessions.messages.
   }),
   (req, res) => {
+    logger.info("Redirigido a perfil");
     res.redirect("/perfil");
   }
 );
@@ -159,6 +167,7 @@ productsRouter.post(
     failureMessage: true, //req.sessions.messages.
   }),
   (req, res) => {
+    logger.info("Redirigido a perfil");
     res.redirect("/perfil");
   }
 );
@@ -182,15 +191,19 @@ productsRouter.post(
 
 //ruta de logout con passport
 productsRouter.get("/logout", (req, res) => {
+  logger.info("Desloguear");
   req.logout((err) => {
     if (err) return res.send("hubo un error al cerrar sesion");
     req.session.destroy();
+    logger.info("Desloguear y redirigir a home");
     res.redirect("/");
   });
 });
 
 productsRouter.get("/logout", (req, res) => {
+  logger.info("Desloguear");
   req.session.destroy();
+  logger.info("Desloguear y redirigir a home");
   res.send("sesion finalizada");
   res.redirect("/");
 });
@@ -198,6 +211,7 @@ productsRouter.get("/logout", (req, res) => {
 // Ruta contar numeros No bloqueante
 // ?cant=x     - Query param
 productsRouter.get("/randoms", (req, res) => {
+  logger.info("Acceso a Ruta randoms");
   let { cant } = req.query;
   if (!cant) {
     cant = 1000000;
@@ -206,7 +220,6 @@ productsRouter.get("/randoms", (req, res) => {
     res.send("Debe ingresar por parámetro un valor entre 1 y 10.000.000.000");
   }
   const child = fork("./child.js");
-  console.log(cant);
   //recibimos mensajes del proceso hijo
   child.on("message", (childMsg) => {
     if (childMsg === "listo") {
@@ -220,6 +233,7 @@ productsRouter.get("/randoms", (req, res) => {
 
 // Ruta info - process
 productsRouter.get("/info", (req, res) => {
+  logger.info("Acceso a Ruta info");
   const info = {
     argumentosDeEntrada: process.cwd(),
     plataforma: process.platform,
@@ -234,6 +248,7 @@ productsRouter.get("/info", (req, res) => {
 
 // Ruta info Compression
 productsRouter.get("/infoCompression", compression(), (req, res) => {
+  logger.info("Acceso a Ruta infoCompression");
   const info = {
     argumentosDeEntrada: process.cwd(),
     plataforma: process.platform,
@@ -249,12 +264,14 @@ productsRouter.get("/infoCompression", compression(), (req, res) => {
 // Rutas Moks
 // ?cant=5     - Query param
 productsRouter.post("/generar-productos", (req, res) => {
+  logger.info("Acceso a Ruta generar-productos");
   const { cant } = req.query;
   let result = productsRandom.populate(parseInt(cant));
   res.send(result);
 });
 
 productsRouter.get("/productos-test", (req, res) => {
+  logger.info("Acceso a Ruta productos-test");
   res.render("productosTest", { products: productsRandom.getAll() });
 });
 
@@ -269,6 +286,7 @@ productsRouter.get("/:id", async (req, res) => {
 });
 
 productsRouter.put("/:id", async (req, res) => {
+  logger.info("Acceso a actualizar filtrado por id");
   const cambioObj = req.body;
   const productId = req.params.id;
   const result = await listaProductos.updateById(
@@ -279,6 +297,7 @@ productsRouter.put("/:id", async (req, res) => {
 });
 
 productsRouter.delete("/:id", async (req, res) => {
+  logger.info("Borrar producto por id");
   const productId = req.params.id;
   const result = await listaProductos.deleteById(parseInt(productId));
   res.send(result);
