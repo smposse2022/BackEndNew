@@ -323,8 +323,5 @@ export { productsRouter };
 
 //artillery quick --count 20 -n 50 http://localhost:8080/info > result_info.txt
 
-//funcion no bloqueante
-//artillery quick --count 10 -n 50 http://localhost:8080/auth-nobloq?username=fredy&password=1234 > result_nobloq.txt
-
 //compilacion de archivos isolate
 // node.exe --prof-process src/isolate-info.log > result_prof_info.txt
