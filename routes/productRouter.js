@@ -100,6 +100,10 @@ passport.use(
   )
 );
 
+productsRouter.get("/favicon.ico", (req, res) => {
+  return "your faveicon";
+});
+
 productsRouter.get("/", async (req, res) => {
   const productos = await listaProductos.getAll();
   const messages = await chatWebsocket.getAll();
@@ -217,6 +221,7 @@ productsRouter.get("/randoms", (req, res) => {
     cant = 1000000;
   }
   if (cant < 1 || cant > 1e10) {
+    logger.error("Parámetro ingresado inválido");
     res.send("Debe ingresar por parámetro un valor entre 1 y 10.000.000.000");
   }
   const child = fork("./child.js");
@@ -243,6 +248,7 @@ productsRouter.get("/info", (req, res) => {
     id: process.pid,
     carpeta: process.argv[1],
   };
+  console.log(info);
   res.status(200).json(info);
 });
 
@@ -275,17 +281,17 @@ productsRouter.get("/productos-test", (req, res) => {
   res.render("productosTest", { products: productsRandom.getAll() });
 });
 
-productsRouter.get("/:id", async (req, res) => {
+productsRouter.get("/productos/:id", async (req, res) => {
   const productId = req.params.id;
   const product = await listaProductos.getById(parseInt(productId));
   if (product) {
     return res.send(product);
   } else {
-    return res.send({ error: "producto no encontrado" });
+    return res.redirect("/");
   }
 });
 
-productsRouter.put("/:id", async (req, res) => {
+productsRouter.put("/productos/:id", async (req, res) => {
   logger.info("Acceso a actualizar filtrado por id");
   const cambioObj = req.body;
   const productId = req.params.id;
@@ -296,11 +302,29 @@ productsRouter.put("/:id", async (req, res) => {
   res.send(result);
 });
 
-productsRouter.delete("/:id", async (req, res) => {
+productsRouter.delete("/productos/:id", async (req, res) => {
   logger.info("Borrar producto por id");
   const productId = req.params.id;
   const result = await listaProductos.deleteById(parseInt(productId));
   res.send(result);
 });
 
+productsRouter.get("*", (req, res) => {
+  logger.warn("Se intentó acceder a una ruta inexistente");
+  res.redirect("/");
+});
+
 export { productsRouter };
+//comandos
+// curl -X GET "http://localhost:8080/xxx"
+
+//profiling commands
+// node --prof server.js
+
+//artillery quick --count 20 -n 50 http://localhost:8080/info > result_info.txt
+
+//funcion no bloqueante
+//artillery quick --count 10 -n 50 http://localhost:8080/auth-nobloq?username=fredy&password=1234 > result_nobloq.txt
+
+//compilacion de archivos isolate
+// node --prof-process src/isolate-info.log > result_prof_info.txt

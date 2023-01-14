@@ -15,7 +15,7 @@ import MongoStore from "connect-mongo";
 import passport from "passport";
 import mongoose from "mongoose"; //db usuarios
 import { UserModel } from "./models/user.js";
-//import { config } from "./config.js";
+import { config } from "./config.js";
 import parsedArgs from "minimist";
 import cluster from "cluster";
 import os from "os";
@@ -80,7 +80,8 @@ if (MODO == "CLUSTER" && cluster.isPrimary) {
 
     //agrego el producto a la lista de productos
     socket.on("newProduct", async (data) => {
-      await listaProductos.save(data);
+      const info = await listaProductos.save(data);
+      logger.info(info);
       //envío la lista de productos actualizada a todos los sockets
       io.sockets.emit("products", await listaProductos.getAll());
     });

@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
+import { logger } from "../logger.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -47,6 +48,7 @@ class ContenedorChat {
         );
       }
     } catch (error) {
+      logger.error("Parámetros incorrectos");
       return "No se pudo almacenar el mensaje";
     }
   }
@@ -67,6 +69,7 @@ class ContenedorChat {
         return [];
       }
     } catch (error) {
+      logger.error("El archivo no existe");
       return "El archivo no existe";
     }
   }
