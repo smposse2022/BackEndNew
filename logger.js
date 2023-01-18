@@ -5,8 +5,8 @@ log4js.configure({
   appenders: {
     //definir las salidas de datos
     consola: { type: "console" },
-    archivoWarn: { type: "file", filename: "./src/logs/warn.log" },
-    archivoErrores: { type: "file", filename: "./src/logs/errores.log" },
+    archivoWarn: { type: "file", filename: "logs/warn.log" },
+    archivoErrores: { type: "file", filename: "logs/errores.log" },
     //salidas con niveles definidos
     loggerConsola: {
       type: "logLevelFilter",
