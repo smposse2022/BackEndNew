@@ -1,11 +1,10 @@
 import express from "express";
-import { productsRouter } from "./routes/productRouter.js";
+import { productsRouter } from "./src/routes/productRouter.js";
+import { authRouter } from "./src/routes/authRouter.js";
+import { cartsRouter } from "./src/routes/cartsRouter.js";
 import handlebars from "express-handlebars";
 import { Server } from "socket.io";
-import { ContenedorSql } from "./managers/contenedorSql.js";
-import { ContenedorChat } from "./managers/contenedorChat.js";
-//const ContenedorWebsocketSqlite = require("./managers/websocket");
-import { options } from "./options/mySqulConfig.js";
+import { options } from "./src/config/databaseConfig.js";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 //import { normalize, schema } from "normalizr";
@@ -14,12 +13,17 @@ import cookieParser from "cookie-parser";
 import MongoStore from "connect-mongo";
 import passport from "passport";
 import mongoose from "mongoose"; //db usuarios
-import { UserModel } from "./models/user.js";
-import { config } from "./config.js";
+import { UserModel } from "./src/models/user.js";
+import { config } from "./src/configDotenv.js";
 import parsedArgs from "minimist";
 import cluster from "cluster";
 import os from "os";
-import { logger } from "./logger.js";
+import { logger } from "./src/logger.js";
+import {
+  ContenedorDaoProductos,
+  ContenedorDaoCarritos,
+} from "./src/daos/index.js";
+import { ContenedorChat } from "./src/managers/contenedorChat.js";
 
 // Minimist
 const optionsMinimist = {
@@ -39,9 +43,31 @@ app.use(express.urlencoded({ extended: true }));
 const __dirname = dirname(fileURLToPath(import.meta.url));
 app.use(express.static(__dirname + "/public"));
 
+// configurando almacenamiento de sessions en Mongo Atlas
+app.use(cookieParser());
+
+app.use(
+  session({
+    //definimos el session store
+    store: MongoStore.create({
+      mongoUrl: options.mongo.url,
+    }),
+    secret: "claveSecreta",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 600000,
+    },
+  })
+);
+
+//configurar passport
+app.use(passport.initialize()); //conectamos a passport con express.
+app.use(passport.session()); //vinculacion entre passport y las sesiones de nuestros usuarios.
+
 //conectamos a la base de datos
 mongoose.connect(
-  "mongodb+srv://smposse:coderMongo2022@cluster0.94d5car.mongodb.net/authDB?retryWrites=true&w=majority",
+  options.mongo.url,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -70,6 +96,7 @@ if (MODO == "CLUSTER" && cluster.isPrimary) {
     logger.info(`listening on port ${PORT} on process ${process.pid}`)
   );
   const io = new Server(server);
+  const listaProductos = ContenedorDaoProductos;
 
   //socket
   io.on("connection", async (socket) => {
@@ -101,51 +128,15 @@ if (MODO == "CLUSTER" && cluster.isPrimary) {
 
 //configuracion template engine handlebars
 app.engine("handlebars", handlebars.engine());
-app.set("views", __dirname + "/views");
+app.set("views", __dirname + "/src/views");
 app.set("view engine", "handlebars");
 
-export const listaProductos = new ContenedorSql(options.mariaDb, "products");
-//const chatWebsocket = new ContenedorSql(options.sqliteDb, "messages");
-export const chatWebsocket = new ContenedorChat("Messages.txt");
-
-// configurando almacenamiento de sessions en Mongo Atlas
-app.use(cookieParser());
-
-app.use(
-  session({
-    //definimos el session store
-    store: MongoStore.create({
-      mongoUrl:
-        "mongodb+srv://smposse:coderMongo2022@cluster0.94d5car.mongodb.net/sessionsDB?retryWrites=true&w=majority",
-    }),
-    secret: "claveSecreta",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      maxAge: 600000,
-    },
-  })
-);
-
-//configurar passport
-app.use(passport.initialize()); //conectamos a passport con express.
-app.use(passport.session()); //vinculacion entre passport y las sesiones de nuestros usuarios.
+export const chatWebsocket = new ContenedorChat("Messages.json");
 
 //api routes
-app.use("/", productsRouter);
-
-//serializar un usuario
-passport.serializeUser((user, done) => {
-  done(null, user.id);
-});
-
-//deserializar al usuario
-passport.deserializeUser((id, done) => {
-  //validar si el usuario existe en db.
-  UserModel.findById(id, (err, userFound) => {
-    return done(err, userFound);
-  });
-});
+app.use("/auth", authRouter);
+app.use("/productos", productsRouter);
+app.use("/carritos", cartsRouter);
 
 /*// normalización
 // creamos los schemas
