@@ -1,6 +1,9 @@
 import express from "express";
-import { chatWebsocket } from "../../server.js";
-import { ContenedorDaoProductos } from "../daos/index.js";
+//import { chatWebsocket } from "../../server.js";
+import {
+  ContenedorDaoProductos,
+  ContenedorDaoMessages,
+} from "../daos/index.js";
 import { checkAdminRole } from "../middlewares/isAdmin.js";
 import { checkLogin } from "../middlewares/checkLogin.js";
 import { options } from "../config/databaseConfig.js";
@@ -12,11 +15,10 @@ import bcrypt from "bcrypt"; //encriptar las contrase;as
 import { fork } from "child_process";
 import compression from "compression";
 import { logger } from "../logger.js";
-import { createTransport } from "nodemailer";
-import twilio from "twilio";
 
 // Product manager
 const listaProductos = ContenedorDaoProductos;
+const chatWebsocket = ContenedorDaoMessages;
 
 // Product Router
 const productsRouter = express.Router();
@@ -31,9 +33,8 @@ productsRouter.get("/", async (req, res) => {
   const productos = await listaProductos.getAll();
   const messages = await chatWebsocket.getAll();
   if (req.session.passport) {
-    const usuario = await UserModel.findOne({ _id: req.session.passport.user });
     logger.info("Acceso a ruta home con usuario registrado");
-    res.render("home", { user: usuario.name });
+    res.render("home", { user: req.user.nombre });
   } else {
     logger.info("Acceso a ruta home sin usuario registrado");
     res.render("home", { user: "Invitado" });
@@ -169,86 +170,5 @@ productsRouter.get("*", (req, res) => {
 
 //compilacion de archivos isolate
 // node --prof-process isolate-info.log > result_prof_info.txt
-
-// Nodemailer
-
-const testEmail = "smposse@gmail.com";
-const testPass = "ngnusqmuhxkswwjp"; // Contraseña para conectar a Google: ngnusqmuhxkswwjp
-
-// configuración del transporte de Nodemailer
-const transporter = createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  auth: {
-    user: testEmail,
-    pass: testPass,
-  },
-  // Propiedades para usar Postman
-  secure: false,
-  tls: {
-    rejectUnauthorized: false,
-  },
-});
-
-const emailTemplate = `<div>
-    <h1>Bienvenido!!</h1>
-    <img src="https://fs-prod-cdn.nintendo-europe.com/media/images/10_share_images/portals_3/2x1_SuperMarioHub.jpg" style="width:250px"/>
-    <p>Ya puedes empezar a usar nuestros servicios</p>
-    <a href="https://www.google.com/">Explorar</a>
-</div>`;
-
-const mailOptions = {
-  from: "Servidor de NodeJs",
-  to: testEmail,
-  subject: "Correo de prueba desde un servidor de Node",
-  html: emailTemplate,
-};
-
-productsRouter.post("/envio-mail-gmail", async (req, res) => {
-  try {
-    const response = await transporter.sendMail(mailOptions);
-    res.send(`El mensaje fue enviado ${response}`);
-  } catch (error) {
-    logger.error(`Hubo un error ${error}`);
-  }
-});
-
-// Twilio
-
-// Agregamos las credenciales de Twilio - para que la aplicación de NodeJs se conecte con Twilio
-const accountId = "ACa02cf41b405cac0fbde06beb807035c8";
-const authToken = "e401bf25bb399a0005c3aef491e66501";
-
-// creamos un cliente para conectar con Twilio
-const client = twilio(accountId, authToken);
-
-productsRouter.post("/twilio-sms", async (req, res) => {
-  try {
-    // utilizamos el cliente para enviar un mensaje
-    const response = await client.messages.create({
-      body: "Hola. Envío de Mensaje desde NodeJs utilizando Twilio",
-      from: "+16064023943", // número desde donde sale el mensaje
-      to: "+541130296235", // destinatario - Santiago Posse
-    });
-    res.send(`El mensaje fue enviado ${response}`);
-  } catch (error) {
-    logger.error(`Hubo un error ${error}`);
-  }
-});
-
-// Twilio - Whatsapp
-productsRouter.post("/twilio-whatsapp", async (req, res) => {
-  try {
-    // utilizamos el cliente para enviar un mensaje
-    const response = await client.messages.create({
-      body: "Hola. Envío de Mensaje desde NodeJs utilizando Twilio",
-      from: "whatsapp:+14155238886", // número desde donde sale el mensaje
-      to: "whatsapp:+5491130296235", // destinatario - Santiago Posse
-    });
-    res.send(`El mensaje fue enviado ${response}`);
-  } catch (error) {
-    logger.error(`Hubo un error ${error}`);
-  }
-});
 
 export { productsRouter };

@@ -1,4 +1,4 @@
-import { options } from "../options/mySqulConfig.js";
+import { options } from "../config/databaseConfig.js";
 import knex from "knex";
 import { logger } from "../logger.js";
 const dbmsql = knex(options.mariaDb);

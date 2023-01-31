@@ -8,7 +8,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 class ContenedorChat {
   constructor(filename) {
-    this.filename = path.join(__dirname, "..", `/files/${filename}`);
+    this.filename = path.join(__dirname, `../files/${filename}`);
   }
 
   async save(chatObj) {

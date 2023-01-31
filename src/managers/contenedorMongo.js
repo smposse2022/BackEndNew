@@ -13,25 +13,8 @@ class ContenedorMongo {
   constructor(model) {
     this.model = model;
   }
-  getAll = async () => {
-    try {
-      const data = await this.model.find();
-      return data;
-    } catch (error) {
-      logger.error(error);
-    }
-  };
 
-  save = async (newItem) => {
-    try {
-      await this.model.create(newItem);
-      return `new item saved`;
-    } catch (error) {
-      logger.error(error);
-    }
-  };
-
-  getById = async (id) => {
+  async getById(id) {
     try {
       const object = await this.model.findById(id);
       if (!object) {
@@ -45,35 +28,52 @@ class ContenedorMongo {
     } catch (error) {
       return { message: `Hubo un error ${error}`, error: true };
     }
-  };
+  }
 
-  deleteById = async (id) => {
+  async getAll() {
     try {
-      await this.model.findByIdAndDelete(id);
-      return { message: "delete successfully" };
+      const objects = await this.model.find();
+      return objects;
     } catch (error) {
-      return { message: `Error al borrar: no se encontró el id ${id}` };
+      return [];
     }
-  };
+  }
 
-  deleteAll = async () => {
+  async save(product) {
     try {
-      await this.model.deleteMany({});
-      return { message: "delete successfully" };
+      const object = await this.model.create(product);
+      return `new document saved with id: ${object._id}`;
     } catch (error) {
-      logger.error(error);
+      return { message: `Error al guardar: ${error}` };
     }
-  };
+  }
 
-  updateById = async (id, title) => {
-    // no debería modificar sólo el título, ver de hacerlo con body
+  async updateById(body, id) {
     try {
       await this.model.findByIdAndUpdate(id, body, { new: true });
       return { message: "Update successfully" };
     } catch (error) {
       return { message: `Error al actualizar: no se encontró el id ${id}` };
     }
-  };
+  }
+
+  async deleteById(id) {
+    try {
+      await this.model.findByIdAndDelete(id);
+      return { message: "delete successfully" };
+    } catch (error) {
+      return { message: `Error al borrar: no se encontró el id ${id}` };
+    }
+  }
+
+  async deleteAll() {
+    try {
+      await this.model.delete({});
+      return { message: "delete successfully" };
+    } catch (error) {
+      return { message: `Error al borrar todo: ${error}` };
+    }
+  }
 }
 
 export { ContenedorMongo };

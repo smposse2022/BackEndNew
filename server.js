@@ -22,6 +22,7 @@ import { logger } from "./src/logger.js";
 import {
   ContenedorDaoProductos,
   ContenedorDaoCarritos,
+  ContenedorDaoMessages,
 } from "./src/daos/index.js";
 import { ContenedorChat } from "./src/managers/contenedorChat.js";
 
@@ -97,6 +98,7 @@ if (MODO == "CLUSTER" && cluster.isPrimary) {
   );
   const io = new Server(server);
   const listaProductos = ContenedorDaoProductos;
+  const chatWebsocket = ContenedorDaoMessages;
 
   //socket
   io.on("connection", async (socket) => {
@@ -131,11 +133,9 @@ app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/src/views");
 app.set("view engine", "handlebars");
 
-export const chatWebsocket = new ContenedorChat("Messages.json");
-
 //api routes
-app.use("/auth", authRouter);
 app.use("/productos", productsRouter);
+app.use("/auth", authRouter);
 app.use("/carritos", cartsRouter);
 
 /*// normalización

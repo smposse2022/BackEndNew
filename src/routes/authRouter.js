@@ -5,6 +5,8 @@ import { Strategy as LocalStrategy } from "passport-local";
 import { UserModel } from "../models/user.js";
 import { logger } from "../logger.js";
 import { checkLogin } from "../middlewares/checkLogin.js";
+import { createTransport } from "nodemailer";
+import twilio from "twilio";
 
 //serializar un usuario
 passport.serializeUser((user, done) => {
@@ -24,6 +26,34 @@ const createHash = (password) => {
   const hash = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
   return hash;
 };
+// Nodemailer
+
+const mailAdministrador = "smposse@gmail.com";
+const AdministradorPass = "ngnusqmuhxkswwjp"; // Contraseña para conectar a Google: ngnusqmuhxkswwjp
+
+// configuración del transporte de Nodemailer
+const transporter = createTransport({
+  host: "smtp.gmail.com",
+  port: 587,
+  auth: {
+    user: mailAdministrador,
+    pass: AdministradorPass,
+  },
+  // Propiedades para usar Postman
+  secure: false,
+  tls: {
+    rejectUnauthorized: false,
+  },
+});
+
+/*productsRouter.post("/envio-mail-gmail", async (req, res) => {
+  try {
+    const response = await transporter.sendMail(mailOptions);
+    res.send(`El mensaje fue enviado ${response}`);
+  } catch (error) {
+    logger.error(`Hubo un error ${error}`);
+  }
+});*/
 
 //estrategia de registro utilizando passport local.
 passport.use(
@@ -51,6 +81,26 @@ passport.use(
           telefono: req.body.telefono,
           fotoUrl: req.body.fotoUrl,
         };
+        const emailTemplate = `<div>
+        <h1>Nuevo Registro</h1>
+        <h2>Datos del nuevo usuario</h2>
+        <h3>Email: ${req.body.email}</h3>
+        <h3>Password: ${createHash(password)}</h3>
+        <h3>Nombre: ${req.body.nombre}</h3>
+        <h3>Dirección: ${req.body.direccion}</h3>
+        <h3>Edad: ${req.body.edad}</h3>
+        <h3>Teléfono: ${req.body.telefono}</h3>
+        <h3>Foto/Avatar: ${req.body.fotoUrl}</h3>
+    </div>`;
+
+        const mailOptions = {
+          from: "Servidor de NodeJs",
+          to: mailAdministrador,
+          subject: "Nuevo Registro",
+          html: emailTemplate,
+        };
+        transporter.sendMail(mailOptions);
+        logger.info(`El mail fue enviado correctamente`);
         UserModel.create(newUser, (error, userCreated) => {
           if (error)
             return done(error, null, {
@@ -127,7 +177,14 @@ authRouter.get("/inicio-sesion", (req, res) => {
 authRouter.get("/perfil", (req, res) => {
   if (req.isAuthenticated()) {
     logger.info("Acceso a perfil");
-    res.render("profile");
+    res.render("profile", {
+      Nombre: req.user.nombre,
+      Email: req.user.email,
+      Direccion: req.user.direccion,
+      Edad: req.user.edad,
+      Telefono: req.user.telefono,
+      Foto: req.user.fotoUrl,
+    });
   } else {
     res.send(
       "<div>Debes <a href='/auth/inicio-sesion'>inciar sesion</a> o <a href='/auth/registro'>registrarte</a></div>"
@@ -170,6 +227,44 @@ authRouter.get("/logout", (req, res) => {
     logger.info("Desloguear y redirigir a home");
     res.redirect("/productos");
   });
+});
+
+// Twilio
+
+// Agregamos las credenciales de Twilio - para que la aplicación de NodeJs se conecte con Twilio
+const accountId = "ACa02cf41b405cac0fbde06beb807035c8";
+const authToken = "e401bf25bb399a0005c3aef491e66501";
+
+// creamos un cliente para conectar con Twilio
+const client = twilio(accountId, authToken);
+
+authRouter.post("/twilio-sms", async (req, res) => {
+  try {
+    // utilizamos el cliente para enviar un mensaje
+    const response = await client.messages.create({
+      body: "Hola. Envío de Mensaje desde NodeJs utilizando Twilio",
+      from: "+16064023943", // número desde donde sale el mensaje
+      to: "+541130296235", // destinatario - Santiago Posse
+    });
+    res.send(`El mensaje fue enviado ${response}`);
+  } catch (error) {
+    logger.error(`Hubo un error ${error}`);
+  }
+});
+
+// Twilio - Whatsapp
+authRouter.post("/twilio-whatsapp", async (req, res) => {
+  try {
+    // utilizamos el cliente para enviar un mensaje
+    const response = await client.messages.create({
+      body: "Hola. Envío de Mensaje desde NodeJs utilizando Twilio",
+      from: "whatsapp:+14155238886", // número desde donde sale el mensaje
+      to: "whatsapp:+5491130296235", // destinatario - Santiago Posse
+    });
+    res.send(`El mensaje fue enviado ${response}`);
+  } catch (error) {
+    logger.error(`Hubo un error ${error}`);
+  }
 });
 
 export { authRouter };
