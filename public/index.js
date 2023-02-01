@@ -80,7 +80,7 @@ const chatSchema = new normalizr.schema.Entity(
 socketClient.on("messages", async (dataMsg) => {
   let messageElements = "";
   dataMsg.forEach((msg) => {
-    messageElements += `<div><strong>${msg.username} - ${msg.timestamp}:</strong> ${msg.message}</div>`;
+    messageElements += `<div><strong>${msg.username} - ${msg.createdAt}:</strong> ${msg.message}</div>`;
   });
   const chatContainer = document.getElementById("chatContainer");
   chatContainer.innerHTML = dataMsg.length > 0 ? messageElements : "";
@@ -106,3 +106,16 @@ chatButton.addEventListener("click", () => {
     chatInput.value = "";
   }
 });
+
+/*const buttonAddToCart = document.getElementById("buttonAdToCart");
+
+buttonAddToCart.addEventListener("click", () => {
+  console.log("Click al boton");
+});
+*/
+
+function addProduct($this) {
+  console.log($this);
+}
+
+console.log("js carga inicial");

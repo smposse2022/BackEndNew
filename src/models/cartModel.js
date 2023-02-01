@@ -8,7 +8,7 @@ const cartSchema = new mongoose.Schema(
   {
     products: {
       type: [Number],
-      require: true,
+      required: true,
     },
   },
   {

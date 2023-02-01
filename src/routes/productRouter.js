@@ -122,9 +122,9 @@ productsRouter.post("/generar-productos", (req, res) => {
   res.send(result);
 });
 
-productsRouter.get("/productos-test", (req, res) => {
+productsRouter.get("/productos-test", async (req, res) => {
   logger.info("Acceso a Ruta productos-test");
-  res.render("productosTest", { products: productsRandom.getAll() });
+  res.render("productosTest", { products: await listaProductos.getAll() });
 });
 
 productsRouter.get("/productos/:id", async (req, res) => {

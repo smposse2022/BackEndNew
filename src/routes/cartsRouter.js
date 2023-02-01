@@ -25,10 +25,7 @@ cartsRouter.get("/", async (req, res) => {
 });
 
 cartsRouter.post("/", async (req, res) => {
-  const response = await listaCarritos.save({
-    products: [],
-    timestamp: new Date().toLocaleDateString(),
-  });
+  const response = await listaCarritos.save();
   res.json(response);
 });
 

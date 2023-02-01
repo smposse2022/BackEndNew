@@ -8,6 +8,8 @@
           <th scope="col">Titulo</th>
           <th scope="col">Precio</th>
           <th scope="col">Imagen</th>
+          <th scope="col">#</th>
+
         </tr>
       </thead>
       <tbody>
@@ -17,6 +19,8 @@
             <td>{{this.title}}</td>
             <td>{{this.price}}</td>
             <td><img width="70" src={{this.thumbnail}} /></td>
+            <td><button onclick={addProduct(this)}>>Agregar al Carrito</button></td>
+            
           </tr>
         {{/each}}
       </tbody>
@@ -28,4 +32,4 @@
   {{/if}}
 </div>
 {{> scripts}}
-<script src="../../public/index.js"></script>
+<script type="module" src="index.js"></script>

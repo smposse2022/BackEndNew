@@ -28,16 +28,16 @@ const createHash = (password) => {
 };
 // Nodemailer
 
-const mailAdministrador = "smposse@gmail.com";
-const AdministradorPass = "ngnusqmuhxkswwjp"; // Contraseña para conectar a Google: ngnusqmuhxkswwjp
+const mailAdmin = "smposse@gmail.com";
+const passAdmin = "ngnusqmuhxkswwjp"; // Contraseña para conectar a Google: ngnusqmuhxkswwjp
 
 // configuración del transporte de Nodemailer
-const transporter = createTransport({
+const transporterEmail = createTransport({
   host: "smtp.gmail.com",
   port: 587,
   auth: {
-    user: mailAdministrador,
-    pass: AdministradorPass,
+    user: mailAdmin,
+    pass: passAdmin,
   },
   // Propiedades para usar Postman
   secure: false,
@@ -95,11 +95,11 @@ passport.use(
 
         const mailOptions = {
           from: "Servidor de NodeJs",
-          to: mailAdministrador,
+          to: mailAdmin,
           subject: "Nuevo Registro",
           html: emailTemplate,
         };
-        transporter.sendMail(mailOptions);
+        transporterEmail.sendMail(mailOptions);
         logger.info(`El mail fue enviado correctamente`);
         UserModel.create(newUser, (error, userCreated) => {
           if (error)
