@@ -14,5 +14,3 @@ loginButton.addEventListener("submit", (evt) => {
   }
   return login;
 });
-
-console.log("Login");

@@ -33,7 +33,8 @@ class ContenedorMongo {
   async getAll() {
     try {
       const objects = await this.model.find();
-      return objects;
+      const response = JSON.parse(JSON.stringify(objects));
+      return response;
     } catch (error) {
       return [];
     }
