@@ -25,11 +25,8 @@ cartsRouter.get("/", async (req, res) => {
 });
 
 cartsRouter.post("/", async (req, res) => {
-  const response = await fetch("../../public/js/products.js");
-  console.log(response);
-  const result = await response.text();
-  listaCarritos.save(result);
-  res.json(result);
+  const response = await listaCarritos.save();
+  res.json(response);
 });
 
 cartsRouter.delete("/:id", async (req, res) => {
