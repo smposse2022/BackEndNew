@@ -2,6 +2,7 @@ import express from "express";
 import { productsRouter } from "./src/routes/productRouter.js";
 import { authRouter } from "./src/routes/authRouter.js";
 import { cartsRouter } from "./src/routes/cartsRouter.js";
+import {viewsRouter} from "./src/routes/viewsRouter.js";
 import handlebars from "express-handlebars";
 import { Server } from "socket.io";
 import { options } from "./src/config/databaseConfig.js";
@@ -42,7 +43,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 //trabajar con archivos estaticos de public
 const __dirname = dirname(fileURLToPath(import.meta.url));
-app.use(express.static(__dirname + "/public"));
+app.use(express.static('public'));
 
 // configurando almacenamiento de sessions en Mongo Atlas
 app.use(cookieParser());
@@ -134,6 +135,7 @@ app.set("views", __dirname + "/src/views");
 app.set("view engine", "handlebars");
 
 //api routes
+app.use("/",viewsRouter);
 app.use("/productos", productsRouter);
 app.use("/auth", authRouter);
 app.use("/carritos", cartsRouter);

@@ -25,21 +25,6 @@ const productsRouter = express.Router();
 
 const productsRandom = new ProductsMock();
 
-/*productsRouter.get("/favicon.ico", (req, res) => {
-  return "your faveicon";
-});*/
-
-productsRouter.get("/", async (req, res) => {
-  const productos = await listaProductos.getAll();
-  const messages = await chatWebsocket.getAll();
-  if (req.session.passport) {
-    logger.info("Acceso a ruta home con usuario registrado");
-    res.render("home", { user: req.user.nombre });
-  } else {
-    logger.info("Acceso a ruta home sin usuario registrado");
-    res.render("home", { user: "Invitado" });
-  }
-});
 
 /*productsRouter.post("/login", (req, res) => {
   const user = req.body;
@@ -120,11 +105,6 @@ productsRouter.post("/generar-productos", (req, res) => {
   const { cant } = req.query;
   let result = productsRandom.populate(parseInt(cant));
   res.send(result);
-});
-
-productsRouter.get("/productos-test", async (req, res) => {
-  logger.info("Acceso a Ruta productos-test");
-  res.render("productosTest", { products: await listaProductos.getAll() });
 });
 
 productsRouter.get("/productos/:id", async (req, res) => {

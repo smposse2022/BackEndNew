@@ -107,15 +107,4 @@ chatButton.addEventListener("click", () => {
   }
 });
 
-/*const buttonAddToCart = document.getElementById("buttonAdToCart");
-
-buttonAddToCart.addEventListener("click", () => {
-  console.log("Click al boton");
-});
-*/
-
-function addProduct($this) {
-  console.log($this);
-}
-
-console.log("js carga inicial");
+console.log("js home carga inicial");
