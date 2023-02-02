@@ -4,3 +4,5 @@ function addProduct(productId) {
 }
 
 console.log("ejecutando products js");
+
+console.log("ejecutando products js");
