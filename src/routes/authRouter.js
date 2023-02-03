@@ -5,8 +5,14 @@ import { Strategy as LocalStrategy } from "passport-local";
 import { UserModel } from "../models/user.js";
 import { logger } from "../logger.js";
 import { checkLogin } from "../middlewares/checkLogin.js";
-import { createTransport } from "nodemailer";
-import twilio from "twilio";
+import { transporterEmail, mailAdmin } from "../messages/email.js";
+import {
+  twilioAdminPhone,
+  client,
+  twillioWapp,
+  AdminTel,
+  AdminWapp,
+} from "../messages/twilio.js";
 
 //serializar un usuario
 passport.serializeUser((user, done) => {
@@ -26,25 +32,6 @@ const createHash = (password) => {
   const hash = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
   return hash;
 };
-// Nodemailer
-
-const mailAdmin = "smposse@gmail.com";
-const passAdmin = "ngnusqmuhxkswwjp"; // Contraseña para conectar a Google: ngnusqmuhxkswwjp
-
-// configuración del transporte de Nodemailer
-const transporterEmail = createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  auth: {
-    user: mailAdmin,
-    pass: passAdmin,
-  },
-  // Propiedades para usar Postman
-  secure: false,
-  tls: {
-    rejectUnauthorized: false,
-  },
-});
 
 /*productsRouter.post("/envio-mail-gmail", async (req, res) => {
   try {
@@ -229,22 +216,13 @@ authRouter.get("/logout", (req, res) => {
   });
 });
 
-// Twilio
-
-// Agregamos las credenciales de Twilio - para que la aplicación de NodeJs se conecte con Twilio
-const accountId = "ACa02cf41b405cac0fbde06beb807035c8";
-const authToken = "e401bf25bb399a0005c3aef491e66501";
-
-// creamos un cliente para conectar con Twilio
-const client = twilio(accountId, authToken);
-
 authRouter.post("/twilio-sms", async (req, res) => {
   try {
     // utilizamos el cliente para enviar un mensaje
     const response = await client.messages.create({
       body: "Hola. Envío de Mensaje desde NodeJs utilizando Twilio",
-      from: "+16064023943", // número desde donde sale el mensaje
-      to: "+541130296235", // destinatario - Santiago Posse
+      from: twilioAdminPhone, // número desde donde sale el mensaje
+      to: AdminTel, // destinatario - Santiago Posse
     });
     res.send(`El mensaje fue enviado ${response}`);
   } catch (error) {
@@ -258,8 +236,8 @@ authRouter.post("/twilio-whatsapp", async (req, res) => {
     // utilizamos el cliente para enviar un mensaje
     const response = await client.messages.create({
       body: "Hola. Envío de Mensaje desde NodeJs utilizando Twilio",
-      from: "whatsapp:+14155238886", // número desde donde sale el mensaje
-      to: "whatsapp:+5491130296235", // destinatario - Santiago Posse
+      from: twillioWapp, // número desde donde sale el mensaje
+      to: AdminWapp, // destinatario - Santiago Posse
     });
     res.send(`El mensaje fue enviado ${response}`);
   } catch (error) {
