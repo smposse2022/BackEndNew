@@ -1,11 +1,7 @@
 import express from "express";
-import { productsRouter } from "./src/routes/productRouter.js";
-import { authRouter } from "./src/routes/authRouter.js";
-import { cartsRouter } from "./src/routes/cartsRouter.js";
-import { viewsRouter } from "./src/routes/viewsRouter.js";
 import handlebars from "express-handlebars";
 import { Server } from "socket.io";
-import { options } from "./src/config/databaseConfig.js";
+import { options } from "./src/config/options.js";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 //import { normalize, schema } from "normalizr";
@@ -14,7 +10,7 @@ import cookieParser from "cookie-parser";
 import MongoStore from "connect-mongo";
 import passport from "passport";
 import mongoose from "mongoose"; //db usuarios
-import { UserModel } from "./src/models/user.js";
+import { UserModel } from "./src/dbOperations/models/user.models.js";
 import { config } from "./src/configDotenv.js";
 import parsedArgs from "minimist";
 import cluster from "cluster";
@@ -25,7 +21,8 @@ import {
   ContenedorDaoCarritos,
   ContenedorDaoMessages,
 } from "./src/daos/index.js";
-import { ContenedorChat } from "./src/managers/contenedorChat.js";
+import { connectDB } from "./src/config/databaseConfig.js";
+import { apiRouter } from "./src/routes/indexRouter.js";
 
 // Minimist
 const optionsMinimist = {
@@ -44,10 +41,8 @@ app.use(express.urlencoded({ extended: true }));
 //trabajar con archivos estaticos de public
 const __dirname = dirname(fileURLToPath(import.meta.url));
 app.use(express.static("public"));
-
 // configurando almacenamiento de sessions en Mongo Atlas
 app.use(cookieParser());
-
 app.use(
   session({
     //definimos el session store
@@ -62,24 +57,13 @@ app.use(
     },
   })
 );
-
 //configurar passport
 app.use(passport.initialize()); //conectamos a passport con express.
 app.use(passport.session()); //vinculacion entre passport y las sesiones de nuestros usuarios.
 
 //conectamos a la base de datos
-mongoose.connect(
-  options.mongo.url,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  },
-  (error) => {
-    if (error)
-      return logger.error(`Hubo un error conectandose a la base ${error}`);
-    logger.info("conexion a la base de datos de manera exitosa");
-  }
-);
+connectDB();
+
 // lógica Modos Fork y Cluster
 if (MODO == "CLUSTER" && cluster.isPrimary) {
   // si el modo el CLUSTER y si el cluster pertenece al proceso principal
@@ -135,10 +119,7 @@ app.set("views", __dirname + "/src/views");
 app.set("view engine", "handlebars");
 
 //api routes
-app.use("/", viewsRouter);
-app.use("/productos", productsRouter);
-app.use("/auth", authRouter);
-app.use("/carritos", cartsRouter);
+app.use("/api", apiRouter);
 
 /*// normalización
 // creamos los schemas

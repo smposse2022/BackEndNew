@@ -1,7 +1,8 @@
-import { options } from "../config/databaseConfig.js";
-import { ProductModel } from "../models/productModel.js";
-import { CartModel } from "../models/cartModel.js";
-import { MessagesModel } from "../models/messagesModel.js";
+import { options } from "../config/options.js";
+import { ProductModel } from "../dbOperations/models/product.models.js";
+import { CartModel } from "../dbOperations/models/cart.models.js";
+import { MessagesModel } from "../dbOperations/models/messages.models.js";
+import { UserModel } from "../dbOperations/models/user.models.js";
 
 // generar llave para poder conectarnos de manera segura a nuestra app de Firebase
 // Vinculamos esa clave con nuestro serv principal
@@ -9,6 +10,7 @@ import { MessagesModel } from "../models/messagesModel.js";
 let ContenedorDaoProductos;
 let ContenedorDaoCarritos;
 let ContenedorDaoMessages;
+let ContenedorDaoUsers;
 
 //identificador
 let databaseType = "mongo";
@@ -32,9 +34,11 @@ switch (databaseType) {
     const { ProductsDaoMongo } = await import("./products/productsMongo.js");
     const { CartDaoMongo } = await import("./carts/cartMongo.js");
     const { MessagesDaoMongo } = await import("./messages/messagesMongo.js");
+    const { UsersDaoMongo } = await import("./users/usersMongo.js");
     ContenedorDaoProductos = new ProductsDaoMongo(ProductModel);
     ContenedorDaoCarritos = new CartDaoMongo(CartModel);
     ContenedorDaoMessages = new MessagesDaoMongo(MessagesModel);
+    ContenedorDaoUsers = new UsersDaoMongo(UserModel);
     break;
   /*case "firebase":
     const { ProductsDaoFirebase } = await import(
@@ -46,4 +50,9 @@ switch (databaseType) {
     break;*/
 }
 
-export { ContenedorDaoProductos, ContenedorDaoCarritos, ContenedorDaoMessages };
+export {
+  ContenedorDaoProductos,
+  ContenedorDaoCarritos,
+  ContenedorDaoMessages,
+  ContenedorDaoUsers,
+};

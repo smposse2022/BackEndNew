@@ -1,36 +1,21 @@
-import path from "path";
-import { fileURLToPath } from "url";
+import mongoose from "mongoose";
+import { options } from "./options.js";
+import { logger } from "../logger.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-export const options = {
-  fileSystem: {
-    pathProducts: "Products.json",
-    pathCarts: "Carritos.json",
-    pathMessages: "Messages.json",
-  },
-  /*mariaDb: {
-    client: "mysql",
-    connection: {
-      host: "127.0.0.1",
-      user: "root",
-      password: "",
-      database: "desafiosql",
+export const connectDB = () => {
+  mongoose.set("strictQuery", false);
+  mongoose.connect(
+    options.mongo.url,
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
     },
-  },
-  */ sqliteDb: {
-    client: "sqlite3",
-    connection: {
-      filename: path.join(__dirname, "../db/database.sqlite"),
-    },
-    useNullAsDefault: true,
-  },
-  mongo: {
-    url: "mongodb+srv://smposse:coderMongo2022@cluster0.94d5car.mongodb.net/ecommerceDB?retryWrites=true&w=majority",
-  },
-  /*firebase: {
-    pathProducts: productCollection,
-    pathCarts: cartCollection,
-  },*/
+    (error) => {
+      if (error)
+        return logger.error(
+          `Hubo un error al conectar la base de datos ${error}`
+        );
+      logger.info("Base de datos conectada");
+    }
+  );
 };

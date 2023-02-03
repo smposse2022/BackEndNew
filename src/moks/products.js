@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 const { datatype, commerce, image } = faker;
 faker.locale = "es";
-import { ContenedorMemoria } from "../managers/contenedorMemoria.js";
+import { ContenedorMemoria } from "../dbOperations/managers/contenedorMemoria.js";
 
 class ProductsMock extends ContenedorMemoria {
   constructor() {

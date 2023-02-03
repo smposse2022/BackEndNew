@@ -2,17 +2,19 @@ import express from "express";
 import passport from "passport";
 import bcrypt from "bcrypt";
 import { Strategy as LocalStrategy } from "passport-local";
-import { UserModel } from "../models/user.js";
-import { logger } from "../logger.js";
-import { checkLogin } from "../middlewares/checkLogin.js";
-import { transporterEmail, mailAdmin } from "../messages/email.js";
+import { UserModel } from "../../dbOperations/models/user.models.js";
+import { logger } from "../../logger.js";
+import { checkLogin } from "../../middlewares/checkLogin.js";
+import { transporterEmail, mailAdmin } from "../../messages/email.js";
 import {
   twilioAdminPhone,
   client,
   twillioWapp,
   AdminTel,
   AdminWapp,
-} from "../messages/twilio.js";
+} from "../../messages/twilio.js";
+
+const authRouter = express.Router();
 
 //serializar un usuario
 passport.serializeUser((user, done) => {
@@ -137,12 +139,10 @@ passport.use(
   )
 );
 
-const authRouter = express.Router();
-
 authRouter.get("/registro", (req, res) => {
   if (req.isAuthenticated()) {
     logger.info("Redirigido a home");
-    res.redirect("/productos");
+    res.redirect("/api");
   } else {
     const errorMessage = req.session.messages ? req.session.messages[0] : "";
     logger.info("Redirigido a Signup");
@@ -154,7 +154,7 @@ authRouter.get("/registro", (req, res) => {
 authRouter.get("/inicio-sesion", (req, res) => {
   if (req.isAuthenticated()) {
     logger.info("Redirigido a home");
-    res.redirect("/productos");
+    res.redirect("/api");
   } else {
     logger.info("Redirigido a login");
     res.render("login");
@@ -174,34 +174,34 @@ authRouter.get("/perfil", (req, res) => {
     });
   } else {
     res.send(
-      "<div>Debes <a href='/auth/inicio-sesion'>inciar sesion</a> o <a href='/auth/registro'>registrarte</a></div>"
+      "<div>Debes <a href='/api/auth/inicio-sesion'>inciar sesion</a> o <a href='/api/auth/registro'>registrarte</a></div>"
     );
   }
 });
 
 //rutas de autenticacion registro
 authRouter.post(
-  "/signup",
+  "/api/auth/signup",
   passport.authenticate("signupStrategy", {
     failureRedirect: "/auth/registro",
     failureMessage: true, //req.sessions.messages.
   }),
   (req, res) => {
     logger.info("Redirigido a perfil");
-    res.redirect("/auth/perfil");
+    res.redirect("/api/auth/perfil");
   }
 );
 
 //ruta de autenticacion login
 authRouter.post(
-  "/login",
+  "login",
   passport.authenticate("loginStrategy", {
-    failureRedirect: "/auth/login",
+    failureRedirect: "login",
     failureMessage: true, //req.sessions.messages.
   }),
   (req, res) => {
     logger.info("Redirigido a perfil");
-    res.redirect("/auth/perfil");
+    res.redirect("/api/auth/perfil");
   }
 );
 
@@ -212,7 +212,7 @@ authRouter.get("/logout", (req, res) => {
     if (err) return res.send("hubo un error al cerrar sesion");
     req.session.destroy();
     logger.info("Desloguear y redirigir a home");
-    res.redirect("/productos");
+    res.redirect("/api");
   });
 });
 

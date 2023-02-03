@@ -1,14 +1,3 @@
-import mongoose from "mongoose";
-import { logger } from "../logger.js";
-import { options } from "../config/databaseConfig.js";
-
-mongoose.set("strictQuery", false);
-mongoose.connect(options.mongo.url, (err) => {
-  if (err)
-    return logger.error(`Hubo un error al conectar la base de datos ${err}`);
-  logger.info("Base de datos conectada");
-});
-
 class ContenedorMongo {
   constructor(model) {
     this.model = model;

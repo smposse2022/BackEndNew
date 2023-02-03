@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { logger } from "../logger.js";
+import { logger } from "../../logger.js";
 const { datatype, commerce, image } = faker;
 
 class ContenedorMemoria {

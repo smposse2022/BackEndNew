@@ -1,9 +1,6 @@
 import { Router } from "express";
-import { ContenedorDaoProductos } from "../daos/index.js";
-import { logger } from "../logger.js";
-
-// Product manager
-const listaProductos = ContenedorDaoProductos;
+import { logger } from "../../logger.js";
+import * as ProductController from "../../controllers/products.controller.js";
 
 const viewsRouter = Router();
 
@@ -17,11 +14,7 @@ viewsRouter.get("/", async (req, res) => {
   }
 });
 
-viewsRouter.get("/productos", async (req, res) => {
-  logger.info("Acceso a Ruta productos-test");
-  const products = await listaProductos.getAll();
-  res.render("productos", { products: products });
-});
+viewsRouter.get("/productos", ProductController.getProductsController);
 
 viewsRouter.get("/carrito", (req, res) => {
   //add code to cart view

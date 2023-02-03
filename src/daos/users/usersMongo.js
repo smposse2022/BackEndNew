@@ -1,9 +1,9 @@
 import { ContenedorMongo } from "../../dbOperations/managers/contenedorMongo.js";
 
-class MessagesDaoMongo extends ContenedorMongo {
+class UsersDaoMongo extends ContenedorMongo {
   constructor(model) {
     super(model);
   }
 }
 
-export { MessagesDaoMongo };
+export { UsersDaoMongo };
