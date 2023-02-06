@@ -2,17 +2,17 @@ import express from "express";
 import passport from "passport";
 import bcrypt from "bcrypt";
 import { Strategy as LocalStrategy } from "passport-local";
-import { UserModel } from "../models/user.js";
-import { logger } from "../logger.js";
-import { checkLogin } from "../middlewares/checkLogin.js";
-import { transporterEmail, mailAdmin } from "../messages/email.js";
+import { UserModel } from "../../dbOperations/models/userModel.js";
+import { logger } from "../../logger.js";
+import { checkLogin } from "../../middlewares/checkLogin.js";
+import { transporterEmail, mailAdmin } from "../../messages/email.js";
 import {
   twilioAdminPhone,
   client,
   twillioWapp,
   AdminTel,
   AdminWapp,
-} from "../messages/twilio.js";
+} from "../../messages/twilio.js";
 
 //serializar un usuario
 passport.serializeUser((user, done) => {
@@ -174,7 +174,7 @@ authRouter.get("/perfil", (req, res) => {
     });
   } else {
     res.send(
-      "<div>Debes <a href='/auth/inicio-sesion'>inciar sesion</a> o <a href='/auth/registro'>registrarte</a></div>"
+      "<div>Debes <a href='/api/auth/inicio-sesion'>inciar sesion</a> o <a href='/api/auth/registro'>registrarte</a></div>"
     );
   }
 });

@@ -1,11 +1,7 @@
 import express from "express";
-import { productsRouter } from "./src/routes/productRouter.js";
-import { authRouter } from "./src/routes/authRouter.js";
-import { cartsRouter } from "./src/routes/cartsRouter.js";
-import { viewsRouter } from "./src/routes/viewsRouter.js";
 import handlebars from "express-handlebars";
 import { Server } from "socket.io";
-import { options } from "./src/config/databaseConfig.js";
+import { options } from "./src/config/options.js";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 //import { normalize, schema } from "normalizr";
@@ -13,16 +9,13 @@ import session from "express-session";
 import cookieParser from "cookie-parser";
 import MongoStore from "connect-mongo";
 import passport from "passport";
-import { config } from "./src/configDotenv.js";
 import parsedArgs from "minimist";
 import cluster from "cluster";
 import os from "os";
 import { logger } from "./src/logger.js";
-import {
-  ContenedorDaoProductos,
-  ContenedorDaoMessages,
-} from "./src/daos/index.js";
 import { connectDB } from "./src/config/dbConfig.js";
+import { MessageManager, ProductManager } from "./src/dbOperations/index.js";
+import { apiRouter } from "./src/routes/indexRouter.js";
 
 // Minimist
 const optionsMinimist = {
@@ -85,33 +78,33 @@ if (MODO == "CLUSTER" && cluster.isPrimary) {
     logger.info(`listening on port ${PORT} on process ${process.pid}`)
   );
   const io = new Server(server);
-  const listaProductos = ContenedorDaoProductos;
-  const chatWebsocket = ContenedorDaoMessages;
+  const productsApi = ProductManager;
+  const messagesApi = MessageManager;
 
   //socket
   io.on("connection", async (socket) => {
     logger.info("nuevo usuario conectado", socket.id);
 
     //enviar todos los productos
-    socket.emit("products", await listaProductos.getAll());
+    socket.emit("products", await productsApi.getAll());
 
     //agrego el producto a la lista de productos
     socket.on("newProduct", async (data) => {
-      const info = await listaProductos.save(data);
+      const info = await productsApi.save(data);
       logger.info(info);
       //envío la lista de productos actualizada a todos los sockets
-      io.sockets.emit("products", await listaProductos.getAll());
+      io.sockets.emit("products", await productsApi.getAll());
     });
 
     //CHAT
     //Envio de todos los mensajes al socket que se conecta.
-    io.sockets.emit("messages", await chatWebsocket.getAll());
+    io.sockets.emit("messages", await messagesApi.getAll());
 
     //recibimos el mensaje del usuario y lo guardamos en el archivo chat.txt
     socket.on("newMessage", async (newMsg) => {
-      await chatWebsocket.save(newMsg);
+      await messagesApi.save(newMsg);
 
-      io.sockets.emit("messages", await chatWebsocket.getAll());
+      io.sockets.emit("messages", await messagesApi.getAll());
     });
   });
 }
@@ -122,7 +115,4 @@ app.set("views", __dirname + "/src/views");
 app.set("view engine", "handlebars");
 
 //api routes
-app.use("/", viewsRouter);
-app.use("/productos", productsRouter);
-app.use("/auth", authRouter);
-app.use("/carritos", cartsRouter);
+app.use("/api", apiRouter);

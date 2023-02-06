@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { options } from "./options.js";
+import { logger } from "../logger.js";
 
 export const connectDB = () => {
   mongoose.set("strictQuery", false);
