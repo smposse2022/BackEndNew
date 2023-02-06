@@ -1,15 +1,4 @@
-import mongoose from "mongoose";
-import { logger } from "../logger.js";
-import { options } from "../config/databaseConfig.js";
-
-mongoose.set("strictQuery", false);
-mongoose.connect(options.mongo.url, (err) => {
-  if (err)
-    return logger.error(`Hubo un error al conectar la base de datos ${err}`);
-  logger.info("Base de datos conectada");
-});
-
-class ContenedorMongo {
+class MongoContainer {
   constructor(model) {
     this.model = model;
   }
@@ -33,16 +22,15 @@ class ContenedorMongo {
   async getAll() {
     try {
       const objects = await this.model.find();
-      const response = JSON.parse(JSON.stringify(objects));
-      return response;
+      return objects;
     } catch (error) {
       return [];
     }
   }
 
-  async save(product) {
+  async save(body) {
     try {
-      const object = await this.model.create(product);
+      const object = await this.model.create(body);
       return `new document saved with id: ${object._id}`;
     } catch (error) {
       return { message: `Error al guardar: ${error}` };
@@ -77,4 +65,4 @@ class ContenedorMongo {
   }
 }
 
-export { ContenedorMongo };
+export { MongoContainer };

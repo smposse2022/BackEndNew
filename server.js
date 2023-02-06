@@ -13,8 +13,6 @@ import session from "express-session";
 import cookieParser from "cookie-parser";
 import MongoStore from "connect-mongo";
 import passport from "passport";
-import mongoose from "mongoose"; //db usuarios
-import { UserModel } from "./src/models/user.js";
 import { config } from "./src/configDotenv.js";
 import parsedArgs from "minimist";
 import cluster from "cluster";
@@ -22,10 +20,9 @@ import os from "os";
 import { logger } from "./src/logger.js";
 import {
   ContenedorDaoProductos,
-  ContenedorDaoCarritos,
   ContenedorDaoMessages,
 } from "./src/daos/index.js";
-import { ContenedorChat } from "./src/managers/contenedorChat.js";
+import { connectDB } from "./src/config/dbConfig.js";
 
 // Minimist
 const optionsMinimist = {
@@ -68,18 +65,8 @@ app.use(passport.initialize()); //conectamos a passport con express.
 app.use(passport.session()); //vinculacion entre passport y las sesiones de nuestros usuarios.
 
 //conectamos a la base de datos
-mongoose.connect(
-  options.mongo.url,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  },
-  (error) => {
-    if (error)
-      return logger.error(`Hubo un error conectandose a la base ${error}`);
-    logger.info("conexion a la base de datos de manera exitosa");
-  }
-);
+connectDB();
+
 // lógica Modos Fork y Cluster
 if (MODO == "CLUSTER" && cluster.isPrimary) {
   // si el modo el CLUSTER y si el cluster pertenece al proceso principal
@@ -139,36 +126,3 @@ app.use("/", viewsRouter);
 app.use("/productos", productsRouter);
 app.use("/auth", authRouter);
 app.use("/carritos", cartsRouter);
-
-/*// normalización
-// creamos los schemas
-const authorSchema = new schema.Entity("authors", {}, { idAttribute: "mail" });
-const messageSchema = new schema.Entity("messages", {
-  author: authorSchema,
-});
-// nuevo objeto para el array-creamos el schema global
-const chatSchema = new schema.Entity(
-  "chat",
-  {
-    messages: [messageSchema],
-  },
-  { idAttribute: "id" }
-);
-// aplicar la normalización
-// creamos una función que normaliza la info, y la podemos llamar para normalizar los datos
-const normalizarData = (data) => {
-  const normalizeData = normalize(
-    { id: "chatHistory", messages: data },
-    chatSchema
-  );
-  return normalizeData;
-};
-// creamos una función que me entregue los mensajes normalizados
-const normalizarMensajes = async () => {
-  const result = await chatWebsocket.getAll();
-  const messagesNormalized = normalizarData(result);
-  //console.log(JSON.stringify(messagesNormalized, null, "\t"));
-  return messagesNormalized;
-};
-*/
-//servidor de websocket y lo conectamos con el servidor de express
