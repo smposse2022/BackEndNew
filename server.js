@@ -4,28 +4,24 @@ import { Server } from "socket.io";
 import { options } from "./src/config/options.js";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-//import { normalize, schema } from "normalizr";
 import session from "express-session";
 import cookieParser from "cookie-parser";
 import MongoStore from "connect-mongo";
 import passport from "passport";
-import parsedArgs from "minimist";
 import cluster from "cluster";
 import os from "os";
 import { logger } from "./src/logger.js";
-import { connectDB } from "./src/config/dbConfig.js";
-import { MessageManager, ProductManager } from "./src/dbOperations/index.js";
 import { apiRouter } from "./src/routes/indexRouter.js";
+import { objArguments } from "./src/config/options.js";
 
-// Minimist
-const optionsMinimist = {
-  default: { p: 8080, m: "FORK" },
-  alias: { p: "PORT", m: "mode" },
-};
-const objArguments = parsedArgs(process.argv.slice(2), optionsMinimist);
-const PORT = objArguments.PORT;
-const MODO = objArguments.mode;
-//console.log(objArguments);
+import { getApiDao } from "./src/dbOperations/index.js";
+
+const {
+  CartDaoContainer,
+  MessagesDaoContainer,
+  ProductsDaoContainer,
+  UsersDaoContainer,
+} = await getApiDao(options.server.DBTYPE);
 
 // Crear el servidor
 const app = express();
@@ -42,7 +38,8 @@ app.use(
   session({
     //definimos el session store
     store: MongoStore.create({
-      mongoUrl: options.mongo.url,
+      mongoUrl:
+        "mongodb+srv://smposse:coderMongo2022@cluster0.94d5car.mongodb.net/ecommerceDB?retryWrites=true&w=majority",
     }),
     secret: "claveSecreta",
     resave: false,
@@ -57,8 +54,8 @@ app.use(
 app.use(passport.initialize()); //conectamos a passport con express.
 app.use(passport.session()); //vinculacion entre passport y las sesiones de nuestros usuarios.
 
-//conectamos a la base de datos
-connectDB();
+const PORT = objArguments.PORT;
+const MODO = objArguments.mode;
 
 // lógica Modos Fork y Cluster
 if (MODO == "CLUSTER" && cluster.isPrimary) {
@@ -78,8 +75,8 @@ if (MODO == "CLUSTER" && cluster.isPrimary) {
     logger.info(`listening on port ${PORT} on process ${process.pid}`)
   );
   const io = new Server(server);
-  const productsApi = ProductManager;
-  const messagesApi = MessageManager;
+  const productsApi = ProductsDaoContainer;
+  const messagesApi = MessagesDaoContainer;
 
   //socket
   io.on("connection", async (socket) => {

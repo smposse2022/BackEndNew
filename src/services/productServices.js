@@ -1,19 +1,27 @@
-import { ProductManager } from "../dbOperations/index.js";
+import { getApiDao } from "../dbOperations/index.js";
+import { options } from "../config/options.js";
+
+const {
+  CartDaoContainer,
+  MessagesDaoContainer,
+  ProductsDaoContainer,
+  UsersDaoContainer,
+} = await getApiDao(options.server.DBTYPE);
 
 export const getProducts = async () => {
-  return await ProductManager.getAll();
+  return await ProductsDaoContainer.getAll();
 };
 
 export const addProduct = async (body) => {
-  return await ProductManager.save(body);
+  return await ProductsDaoContainer.save(body);
 };
 
 export const getOneProduct = async (id) => {
-  return await ProductManager.getById(id);
+  return await ProductsDaoContainer.getById(id);
 };
 
 export const updateProduct = async (body, id) => {
-  return await ProductManager.updateById(body, id);
+  return await ProductsDaoContainer.updateById(body, id);
 };
 
 export const deleteProduct = async (id) => {
