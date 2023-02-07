@@ -25,7 +25,7 @@ productForm.addEventListener("submit", (evt) => {
 
 //productos en tiempo real
 const createTable = async (data) => {
-  const response = await fetch("./templates/table.handlebars");
+  const response = await fetch("../templates/table.handlebars");
   const result = await response.text();
   const template = Handlebars.compile(result);
   const html = template({ products: data });

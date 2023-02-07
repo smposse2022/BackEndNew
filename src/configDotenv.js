@@ -1,10 +1,6 @@
-import * as dotenv from "dotenv";
+import dotenv from "dotenv";
 
-const envFile = (process.env.NODE_ENV = ".env.development");
-
-dotenv.config({
-  path: envFile,
-}); //asigna las variables del archivo .env a process.env {PORT:"",MODO:""}
+dotenv.config();
 
 //creamos la configuracion de nuestra aplicacion
 export const config = {

@@ -142,7 +142,7 @@ const authRouter = express.Router();
 authRouter.get("/registro", (req, res) => {
   if (req.isAuthenticated()) {
     logger.info("Redirigido a home");
-    res.redirect("/productos");
+    res.redirect("/api/views");
   } else {
     const errorMessage = req.session.messages ? req.session.messages[0] : "";
     logger.info("Redirigido a Signup");
@@ -154,7 +154,7 @@ authRouter.get("/registro", (req, res) => {
 authRouter.get("/inicio-sesion", (req, res) => {
   if (req.isAuthenticated()) {
     logger.info("Redirigido a home");
-    res.redirect("/productos");
+    res.redirect("/api/views");
   } else {
     logger.info("Redirigido a login");
     res.render("login");
@@ -188,7 +188,7 @@ authRouter.post(
   }),
   (req, res) => {
     logger.info("Redirigido a perfil");
-    res.redirect("/auth/perfil");
+    res.redirect("/api/auth/perfil");
   }
 );
 
@@ -201,7 +201,7 @@ authRouter.post(
   }),
   (req, res) => {
     logger.info("Redirigido a perfil");
-    res.redirect("/auth/perfil");
+    res.redirect("/api/auth/perfil");
   }
 );
 
@@ -212,7 +212,7 @@ authRouter.get("/logout", (req, res) => {
     if (err) return res.send("hubo un error al cerrar sesion");
     req.session.destroy();
     logger.info("Desloguear y redirigir a home");
-    res.redirect("/productos");
+    res.redirect("/api/views");
   });
 });
 
