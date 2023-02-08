@@ -1,4 +1,5 @@
 import { logger } from "../logger.js";
+import { getUsers, saveUser } from "../services/userServices.js";
 
 export const getInfoController = async (req, res) => {
   try {
@@ -17,6 +18,16 @@ export const getInfoController = async (req, res) => {
     logger.error(`Error al leer la ruta de info ${error}`);
   }
 };
+
+export const getUsersController = async (req, res) => {
+  try {
+    const result = await getUsers();
+    res.send(result);
+  } catch (error) {
+    logger.error(`Error al consultar los usuarios ${error}`);
+  }
+};
+
 export const getMeHomeController = async (req, res) => {
   try {
     if (req.session.passport) {

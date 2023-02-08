@@ -7,6 +7,8 @@ const viewsRouter = Router();
 
 viewsRouter.get("/", ViewController.getMeHomeController);
 
+viewsRouter.get("/users", ViewController.getUsersController);
+
 // Ruta info - process
 viewsRouter.get("/info", ViewController.getInfoController);
 

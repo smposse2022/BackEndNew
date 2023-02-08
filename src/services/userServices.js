@@ -1,5 +1,6 @@
 import { getApiDao } from "../dbOperations/index.js";
 import { options } from "../config/options.js";
+import { convertToDto } from "../dbOperations/dtos/userDto.js";
 
 const {
   CartDaoContainer,
@@ -9,7 +10,9 @@ const {
 } = await getApiDao(options.server.DBTYPE);
 
 export const getUsers = async () => {
-  return await UsersDaoContainer.getAll();
+  const data = await UsersDaoContainer.getAll();
+  const response = convertToDto(data);
+  return response;
 };
 
 export const saveUser = async (body) => {
