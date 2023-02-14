@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { logger } from "../../logger.js";
 import * as ViewController from "../../controllers/viewController.js";
 import compression from "compression";
 
