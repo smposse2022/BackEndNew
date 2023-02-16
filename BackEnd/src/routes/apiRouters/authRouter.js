@@ -13,6 +13,8 @@ import {
   AdminTel,
   AdminWapp,
 } from "../../messages/twilio.js";
+import compression from "compression";
+import * as UserController from "../../controllers/userController.js";
 
 //serializar un usuario
 passport.serializeUser((user, done) => {
@@ -138,6 +140,17 @@ passport.use(
 );
 
 const authRouter = express.Router();
+
+authRouter.get("/users", UserController.getUsersController);
+
+authRouter.get("/info", UserController.getInfoController);
+
+// Ruta info Compression
+authRouter.get(
+  "/infoCompression",
+  compression(),
+  UserController.getInfoController
+);
 
 authRouter.get("/registro", (req, res) => {
   if (req.isAuthenticated()) {

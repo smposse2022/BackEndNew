@@ -1,12 +1,7 @@
 import { getApiDao } from "../dbOperations/index.js";
 import { options } from "../config/options.js";
 
-const {
-  CartDaoContainer,
-  MessagesDaoContainer,
-  ProductsDaoContainer,
-  UsersDaoContainer,
-} = await getApiDao(options.server.DBTYPE);
+const { CartDaoContainer } = await getApiDao(options.server.DBTYPE);
 
 export const getCarts = async () => {
   return CartDaoContainer.getAll();

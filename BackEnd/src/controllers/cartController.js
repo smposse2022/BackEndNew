@@ -11,27 +11,30 @@ import { getOneProduct } from "../services/productServices.js";
 export const getCartsController = async (req, res) => {
   try {
     const response = await getCarts();
-    res.json(response);
+    res.status(200).json({ Carritos: response });
   } catch (error) {
     logger.error(`Error al cargar los carritos ${error}`);
+    res.status(400).json({ message: `Error al cargar los carritos ${error}` });
   }
 };
 
 export const createCartController = async (req, res) => {
   try {
     const response = await addCart(req.body);
-    res.json(response);
+    res.status(200).json({ NewCarritos: response });
   } catch (error) {
     logger.error(`Error al crear nuevo carrito${error}`);
+    res.status(400).json({ message: `Error al crear nuevo carrito${error}` });
   }
 };
 
 export const deleteCartController = async (req, res) => {
   try {
     const response = await deleteCart(parseInt(req.params.id));
-    res.json(`Carrito eliminado ${response}`);
+    res.status(200).json({ DeletedCart: response });
   } catch (error) {
     logger.error(`Error al borrar el carrito${error}`);
+    res.status(400).json({ message: `Error al borrar el carrito${error}` });
   }
 };
 

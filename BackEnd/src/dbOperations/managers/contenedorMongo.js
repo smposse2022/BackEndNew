@@ -5,15 +5,9 @@ class MongoContainer {
 
   async getById(id) {
     try {
-      const object = await this.model.findById(id);
-      if (!object) {
-        return {
-          message: `Error al buscar: no se encontró el id ${id}`,
-          error: true,
-        };
-      } else {
-        return { message: object, error: false };
-      }
+      const response = await this.model.findById(id);
+      const data = JSON.parse(JSON.stringify(response)); //convertir a formato json
+      return data;
     } catch (error) {
       return { message: `Hubo un error ${error}`, error: true };
     }
@@ -21,8 +15,9 @@ class MongoContainer {
 
   async getAll() {
     try {
-      const objects = await this.model.find();
-      return objects;
+      const response = await this.model.find();
+      const data = JSON.parse(JSON.stringify(response));
+      return data;
     } catch (error) {
       return [];
     }
@@ -30,8 +25,9 @@ class MongoContainer {
 
   async save(body) {
     try {
-      const object = await this.model.create(body);
-      return `new document saved with id: ${object._id}`;
+      const response = await this.model.create(body);
+      const data = JSON.parse(JSON.stringify(response));
+      return data;
     } catch (error) {
       return { message: `Error al guardar: ${error}` };
     }

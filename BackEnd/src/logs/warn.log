@@ -187,3 +187,4 @@
 [2023-02-07T20:41:49.982] [ERROR] default - Se produjo el error MongooseError: The `uri` parameter to `openUri()` must be a string, got "undefined". Make sure the first parameter to `mongoose.connect()` or `mongoose.createConnection()` is a string.
 [2023-02-07T20:41:49.988] [ERROR] default - Se produjo el error MongooseError: The `uri` parameter to `openUri()` must be a string, got "undefined". Make sure the first parameter to `mongoose.connect()` or `mongoose.createConnection()` is a string.
 [2023-02-07T21:52:55.764] [ERROR] default - Error al consultar los usuarios ReferenceError: data is not defined
+[2023-02-14T18:18:17.807] [ERROR] default - Error al buscar los usuarios ReferenceError: json is not defined

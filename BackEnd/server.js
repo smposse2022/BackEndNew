@@ -1,5 +1,4 @@
 import express from "express";
-import handlebars from "express-handlebars";
 import { Server } from "socket.io";
 import { options } from "./src/config/options.js";
 import { dirname } from "path";
@@ -78,7 +77,7 @@ if (MODO == "CLUSTER" && cluster.isPrimary) {
   const productsApi = ProductsDaoContainer;
   const messagesApi = MessagesDaoContainer;
 
-  //socket
+  /*//socket
   io.on("connection", async (socket) => {
     logger.info("nuevo usuario conectado", socket.id);
 
@@ -103,13 +102,8 @@ if (MODO == "CLUSTER" && cluster.isPrimary) {
 
       io.sockets.emit("messages", await messagesApi.getAll());
     });
-  });
+  });*/
 }
-
-//configuracion template engine handlebars
-app.engine("handlebars", handlebars.engine());
-app.set("views", __dirname + "/src/views");
-app.set("view engine", "handlebars");
 
 //api routes
 app.use("/api", apiRouter);
