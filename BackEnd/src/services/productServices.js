@@ -20,5 +20,9 @@ export const updateProduct = async (body, id) => {
 };
 
 export const deleteProduct = async (id) => {
-  return await ProductManager.deleteById(id);
+  return await ProductsDaoContainer.deleteById(id);
+};
+
+export const deleteAllProducts = async () => {
+  return await ProductsDaoContainer.deleteAll();
 };

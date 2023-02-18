@@ -10,3 +10,21 @@
 [2023-02-07T20:41:49.988] [ERROR] default - Se produjo el error MongooseError: The `uri` parameter to `openUri()` must be a string, got "undefined". Make sure the first parameter to `mongoose.connect()` or `mongoose.createConnection()` is a string.
 [2023-02-07T21:52:55.764] [ERROR] default - Error al consultar los usuarios ReferenceError: data is not defined
 [2023-02-14T18:18:17.807] [ERROR] default - Error al buscar los usuarios ReferenceError: json is not defined
+[2023-02-18T11:35:16.902] [ERROR] default - Error al eliminar todos los productos ReferenceError: ProductManager is not defined
+[2023-02-18T11:36:26.382] [ERROR] default - Error al eliminar todos los productos ReferenceError: result is not defined
+[2023-02-18T11:46:21.314] [ERROR] default - Error al eliminar todos los productos ReferenceError: result is not defined
+[2023-02-18T11:48:21.747] [ERROR] default - Error al eliminar todos los productos ReferenceError: result is not defined
+[2023-02-18T11:49:10.474] [ERROR] default - Error al eliminar todos los productos Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+[2023-02-18T11:51:00.349] [ERROR] default - Error al eliminar todos los productos Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+[2023-02-18T11:51:35.461] [ERROR] default - Error al eliminar todos los productos Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+[2023-02-18T11:54:48.127] [ERROR] default - Error al eliminar todos los productos Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+[2023-02-18T11:57:03.089] [ERROR] default - Error al eliminar todos los productos Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+[2023-02-18T11:57:03.354] [ERROR] default - Error al eliminar producto Error: Error al borrar: no se encontró el id 63
+[2023-02-18T11:58:12.855] [ERROR] default - Error al eliminar todos los productos Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+[2023-02-18T11:58:13.124] [ERROR] default - Error al eliminar producto Error: Error al borrar: no se encontró el id 63
+[2023-02-18T11:59:42.281] [ERROR] default - Error al eliminar todos los productos Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+[2023-02-18T11:59:42.566] [ERROR] default - Error al eliminar producto Error: Error al borrar: no se encontró el id 63
+[2023-02-18T12:02:19.165] [ERROR] default - Error al eliminar todos los productos Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+[2023-02-18T12:02:19.493] [ERROR] default - Error al eliminar producto Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+[2023-02-18T12:03:04.349] [ERROR] default - Error al eliminar todos los productos Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+[2023-02-18T12:03:04.671] [ERROR] default - Error al eliminar producto Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client

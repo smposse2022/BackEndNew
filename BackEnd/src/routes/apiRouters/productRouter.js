@@ -6,14 +6,14 @@ const productsRouter = express.Router();
 
 productsRouter.get("/", ProductController.getProductsController);
 
-productsRouter.post("/productos", ProductController.addProductController);
+productsRouter.post("/", ProductController.addProductController);
 
-productsRouter.get("/productos/:id", ProductController.getOneProductController);
+productsRouter.get("/:id", ProductController.getOneProductController);
 
-productsRouter.put("/productos/:id", ProductController.updateProductController);
+productsRouter.put("/:id", ProductController.updateProductController);
 
-productsRouter.delete(
-  "/productos/:id",
-  ProductController.deleteOneProductController
-);
+productsRouter.delete("/:id", ProductController.deleteOneProductController);
+
+productsRouter.delete("/", ProductController.deleteAllProductsController);
+
 export { productsRouter };

@@ -38,7 +38,7 @@ app.use(
     //definimos el session store
     store: MongoStore.create({
       mongoUrl:
-        "mongodb+srv://smposse:coderMongo2022@cluster0.94d5car.mongodb.net/ecommerceDB?retryWrites=true&w=majority",
+        "mongodb+srv://smposse:coderMongo2022@cluster0.94d5car.mongodb.net/testingDB?retryWrites=true&w=majority",
     }),
     secret: "claveSecreta",
     resave: false,
@@ -107,3 +107,5 @@ if (MODO == "CLUSTER" && cluster.isPrimary) {
 
 //api routes
 app.use("/api", apiRouter);
+
+export { app };

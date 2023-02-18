@@ -5,6 +5,7 @@ import {
   updateProduct,
   addProduct,
   deleteProduct,
+  deleteAllProducts,
 } from "../services/productServices.js";
 
 export const getProductsController = async (req, res) => {
@@ -43,7 +44,7 @@ export const updateProductController = async (req, res) => {
   try {
     logger.info("Acceso a actualizar filtrado por id");
     const result = await updateProduct(req.body, parseInt(req.params.id));
-    res.status(200).json({ ProductUpdated: result });
+    res.status(200).json({ message: result });
   } catch (error) {
     logger.error(`Error al actualizar producto ${error}`);
     res.status(400).json({ message: `Error al actualizar producto ${error}` });
@@ -51,12 +52,24 @@ export const updateProductController = async (req, res) => {
 };
 
 export const deleteOneProductController = async (req, res) => {
+  const prodId = req.params.id;
   try {
-    const result = await deleteProduct(parseInt(req.params.id));
-    res.status(200).json({ ProductDeleted: result });
-    res.send(`Producto eliminado: ${result}`);
+    const response = await deleteProduct(prodId);
+    res.status(200).json({ message: response });
+    res.send(`Producto eliminado: ${response}`);
   } catch (error) {
     logger.error(`Error al eliminar producto ${error}`);
     res.status(400).json({ message: `Error al eliminar producto ${error}` });
+  }
+};
+
+export const deleteAllProductsController = async (req, res) => {
+  try {
+    const response = await deleteAllProducts();
+    res.status(200).json({ message: response });
+    res.send(`Productos eliminados: ${response}`);
+  } catch (error) {
+    logger.error(`Error al eliminar todos los productos ${error}`);
+    res.status(400).json({ message: `Hubo un error ${error}` });
   }
 };

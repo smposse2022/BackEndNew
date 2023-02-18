@@ -1,13 +1,13 @@
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
-import parsedArgs from "minimist";
+import ParsedArgs from "minimist";
 // Minimist
 const optionsMinimist = {
-  default: { p: 8080, m: "FORK" },
-  alias: { p: "PORT", m: "mode" },
+  default: { p: 8080, m: "FORK", env: "DEV" },
+  alias: { p: "PORT", m: "MODE", e: "ENV" },
 };
-export const objArguments = parsedArgs(process.argv.slice(2), optionsMinimist);
+export const objArguments = ParsedArgs(process.argv.slice(2), optionsMinimist);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,6 +22,8 @@ export const options = {
   },
   mongo: {
     url: "mongodb+srv://smposse:coderMongo2022@cluster0.94d5car.mongodb.net/ecommerceDB?retryWrites=true&w=majority",
+    urlTesting:
+      "mongodb+srv://smposse:coderMongo2022@cluster0.94d5car.mongodb.net/testingDB?retryWrites=true&w=majority",
   },
   sqliteDb: {
     client: "sqlite3",

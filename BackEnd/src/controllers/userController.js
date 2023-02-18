@@ -1,5 +1,10 @@
 import { logger } from "../logger.js";
-import { getUsers, saveUser, deleteUser } from "../services/userServices.js";
+import {
+  getUsers,
+  saveUser,
+  deleteUser,
+  deleteAllUsers,
+} from "../services/userServices.js";
 
 export const getUsersController = async (req, res) => {
   try {
@@ -28,6 +33,15 @@ export const deleteUserController = async (req, res) => {
     res.status(200).json({ message: response });
   } catch (error) {
     logger.error(`Error al borrar un usuario ${error}`);
+    res.status(400).json({ message: `Hubo un error ${error}` });
+  }
+};
+
+export const deleteAllUsersController = async (req, res) => {
+  try {
+    const response = await deleteAllUsers();
+    res.status(200).json({ message: response });
+  } catch (error) {
     res.status(400).json({ message: `Hubo un error ${error}` });
   }
 };

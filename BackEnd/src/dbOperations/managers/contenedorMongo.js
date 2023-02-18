@@ -9,7 +9,7 @@ class MongoContainer {
       const data = JSON.parse(JSON.stringify(response)); //convertir a formato json
       return data;
     } catch (error) {
-      return { message: `Hubo un error ${error}`, error: true };
+      throw new Error(`Hubo un error ${error}`);
     }
   }
 
@@ -19,7 +19,7 @@ class MongoContainer {
       const data = JSON.parse(JSON.stringify(response));
       return data;
     } catch (error) {
-      return [];
+      throw new Error(`Hubo un error ${error}`);
     }
   }
 
@@ -29,34 +29,34 @@ class MongoContainer {
       const data = JSON.parse(JSON.stringify(response));
       return data;
     } catch (error) {
-      return { message: `Error al guardar: ${error}` };
+      throw new Error(`Error al guardar: ${error}`);
     }
   }
 
   async updateById(body, id) {
     try {
       await this.model.findByIdAndUpdate(id, body, { new: true });
-      return { message: "Update successfully" };
+      return "Update successfully";
     } catch (error) {
-      return { message: `Error al actualizar: no se encontró el id ${id}` };
+      throw new Error(`Error al actualizar: no se encontró el id ${id}`);
     }
   }
 
   async deleteById(id) {
     try {
       await this.model.findByIdAndDelete(id);
-      return { message: "delete successfully" };
+      return "delete successfully";
     } catch (error) {
-      return { message: `Error al borrar: no se encontró el id ${id}` };
+      throw new Error(`Error al borrar: no se encontró el id ${id}`);
     }
   }
 
   async deleteAll() {
     try {
-      await this.model.delete({});
-      return { message: "delete successfully" };
+      await this.model.deleteMany({});
+      return "delete All successfully";
     } catch (error) {
-      return { message: `Error al borrar todo: ${error}` };
+      throw new Error(`Error al borrar todo: ${error}`);
     }
   }
 }

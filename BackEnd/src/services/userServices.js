@@ -17,3 +17,7 @@ export const saveUser = async (body) => {
 export const deleteUser = async (userId) => {
   return await UsersDaoContainer.deleteById(userId);
 };
+
+export const deleteAllUsers = async () => {
+  return await UsersDaoContainer.deleteAll();
+};

@@ -142,7 +142,9 @@ passport.use(
 const authRouter = express.Router();
 
 authRouter.get("/users", UserController.getUsersController);
-
+authRouter.post("/user", UserController.saveUserController);
+authRouter.delete("/user/:id", UserController.deleteUserController);
+authRouter.delete("/users", UserController.deleteAllUsersController);
 authRouter.get("/info", UserController.getInfoController);
 
 // Ruta info Compression
