@@ -1,23 +1,41 @@
 import { getApiDao } from "../dbOperations/index.js";
 import { options } from "../config/options.js";
 import { convertToDto } from "../dbOperations/dtos/userDto.js";
+import { UserValidation } from "../dbOperations/validations/userValidations.js";
 
 const { UsersDaoContainer } = await getApiDao(options.server.DBTYPE);
 
 export const getUsers = async () => {
-  const data = await UsersDaoContainer.getAll();
-  const response = convertToDto(data);
-  return response;
+  try {
+    const data = await UsersDaoContainer.getAll();
+    const response = convertToDto(data);
+    return response;
+  } catch (error) {
+    throw new Error(error);
+  }
 };
 
 export const saveUser = async (body) => {
-  return await UsersDaoContainer.save(body);
+  try {
+    UserValidation.validateUser(body, true);
+    return await UsersDaoContainer.save(body);
+  } catch (error) {
+    throw new Error(error);
+  }
 };
 
 export const deleteUser = async (userId) => {
-  return await UsersDaoContainer.deleteById(userId);
+  try {
+    return await UsersDaoContainer.deleteById(userId);
+  } catch (error) {
+    throw new Error(error);
+  }
 };
 
 export const deleteAllUsers = async () => {
-  return await UsersDaoContainer.deleteAll();
+  try {
+    return await UsersDaoContainer.deleteAll();
+  } catch (error) {
+    throw new Error(error);
+  }
 };

@@ -12,7 +12,7 @@ class MyMongoClient {
   async connect() {
     try {
       this.client.set("strictQuery", false);
-      await this.client.connect(options.mongo.urlTesting, {
+      await this.client.connect(options.mongo.url, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       });
