@@ -16,7 +16,7 @@ const getProductsAxios = async () => {
 const getOneProductAxios = async () => {
   try {
     const response = await axios.get(
-      `${baseURL}/productos?ID=63f36bc4916794b0df825d8e`
+      `${baseURL}/productos?id=63f36bc4916794b0df825d8e`
     );
     console.log(response.data);
   } catch (error) {
@@ -27,7 +27,7 @@ const getOneProductAxios = async () => {
 const deleteOneProductAxios = async () => {
   try {
     const response = await axios.get(
-      `${baseURL}/productos?ID=63f36bc4916794b0df825d8e`
+      `${baseURL}/productos?id=63f36bc4916794b0df825d8e`
     );
     console.log(response.data);
   } catch (error) {
@@ -60,8 +60,8 @@ const getDataGot = async () => {
 
 //getDataGot();
 //getProductsAxios();
-//getOneProductAxios();
+getOneProductAxios();
 //saveNewProductAxios();
-deleteOneProductAxios();
+//deleteOneProductAxios();
 
 // nodemon src/clienteAxios-Got/index.js
