@@ -60,8 +60,8 @@ const getDataGot = async () => {
 
 //getDataGot();
 //getProductsAxios();
-//getOneProductAxios();
+getOneProductAxios();
 //saveNewProductAxios();
-deleteOneProductAxios();
+//deleteOneProductAxios();
 
 // nodemon src/clienteAxios-Got/index.js

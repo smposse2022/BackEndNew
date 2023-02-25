@@ -51,10 +51,11 @@ const graphqlSchema = buildSchema(`
     }
 `);
 
-export const GraphqlController = () => {
+/*export const GraphqlController = () => {
   return graphqlHTTP({
     schema: graphqlSchema,
     rootValue: root,
     graphiql: true,
   });
 };
+*/
