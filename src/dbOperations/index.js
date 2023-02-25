@@ -1,8 +1,8 @@
 // Fabrica
-import { UserModel } from "../dbOperations/models/userModel.js";
-import { CartModel } from "../dbOperations/models/cartModel.js";
-import { MessagesModel } from "../dbOperations/models/messagesModel.js";
-import { ProductModel } from "../dbOperations/models/productModel.js";
+import { UserModel } from "./models/userModel.js";
+import { CartModel } from "./models/cartModel.js";
+import { MessagesModel } from "./models/messagesModel.js";
+import { ProductModel } from "./models/productModel.js";
 import { options } from "../config/options.js";
 import { MyMongoClient } from "./clients/dbClientMongo.js";
 

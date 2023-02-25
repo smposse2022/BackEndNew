@@ -1,5 +1,5 @@
 import knex from "knex";
-import { logger } from "../logger.js";
+import { logger } from "../logger.js.js";
 
 class ContenedorSql {
   constructor(options, tableName) {

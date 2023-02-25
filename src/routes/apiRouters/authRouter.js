@@ -142,7 +142,6 @@ passport.use(
 const authRouter = express.Router();
 
 authRouter.get("/users", UserController.getUsersController);
-authRouter.post("/user", UserController.saveUserController);
 authRouter.delete("/user/:id", UserController.deleteUserController);
 authRouter.delete("/users", UserController.deleteAllUsersController);
 authRouter.get("/info", UserController.getInfoController);
@@ -154,69 +153,24 @@ authRouter.get(
   UserController.getInfoController
 );
 
-authRouter.get("/registro", (req, res) => {
-  if (req.isAuthenticated()) {
-    logger.info("Redirigido a home");
-    res.redirect("/api/views");
-  } else {
-    const errorMessage = req.session.messages ? req.session.messages[0] : "";
-    logger.info("Redirigido a Signup");
-    res.render("signup", { error: errorMessage });
-    req.session.messages = [];
-  }
-});
-
-authRouter.get("/inicio-sesion", (req, res) => {
-  if (req.isAuthenticated()) {
-    logger.info("Redirigido a home");
-    res.redirect("/api/views");
-  } else {
-    logger.info("Redirigido a login");
-    res.render("login");
-  }
-});
-
-authRouter.get("/perfil", (req, res) => {
-  if (req.isAuthenticated()) {
-    logger.info("Acceso a perfil");
-    res.render("profile", {
-      Nombre: req.user.nombre,
-      Email: req.user.email,
-      Direccion: req.user.direccion,
-      Edad: req.user.edad,
-      Telefono: req.user.telefono,
-      Foto: req.user.fotoUrl,
-    });
-  } else {
-    res.send(
-      "<div>Debes <a href='/api/auth/inicio-sesion'>inciar sesion</a> o <a href='/api/auth/registro'>registrarte</a></div>"
-    );
-  }
-});
-
 //rutas de autenticacion registro
 authRouter.post(
   "/signup",
-  passport.authenticate("signupStrategy", {
-    failureRedirect: "/auth/registro",
-    failureMessage: true, //req.sessions.messages.
-  }),
+  passport.authenticate("signupStrategy"),
   (req, res) => {
-    logger.info("Redirigido a perfil");
-    res.redirect("/api/auth/perfil");
+    logger.info("Registro exitoso");
+    res.json("Registro exitoso");
   }
 );
 
 //ruta de autenticacion login
 authRouter.post(
   "/login",
-  passport.authenticate("loginStrategy", {
-    failureRedirect: "/auth/login",
-    failureMessage: true, //req.sessions.messages.
-  }),
+  passport.authenticate("loginStrategy"),
   (req, res) => {
-    logger.info("Redirigido a perfil");
-    res.redirect("/api/auth/perfil");
+    logger.info("Login exitoso");
+    console.log(req.user);
+    res.json(`Login exitoso ${req.user}`);
   }
 );
 
