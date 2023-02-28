@@ -3,12 +3,12 @@ import https from "https";
 
 // https://jsonplaceholder.typicode.com/users
 
-const URL = "http://localhost:8081";
+const URL = "localhost";
 
 //opciones de la solicitud
 const options = {
   hostname: URL,
-  port: 80,
+  port: 8081,
   path: "/api/productos",
   method: "GET",
 };
