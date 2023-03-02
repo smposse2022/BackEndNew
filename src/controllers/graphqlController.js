@@ -43,11 +43,15 @@ const graphqlSchema = buildSchema(`
     }
     type Query{
         getUsers: [User],
-        getUserById(_id:String): User
+        getUserById(_id:String): User,
+        getProducts: [Product],
+        getProductById(_id:String): Product,
     }
     type Mutation{
         addUser(user:UserInput): User,
-        deleteUserById(_id:String): String
+        deleteUserById(_id:String): String,
+        addProduct(newProduct:ProductInput):Product,
+        deleteProductById(_id:String): String,
     }
 `);
 
