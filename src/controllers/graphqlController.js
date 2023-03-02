@@ -10,7 +10,7 @@ const graphqlSchema = buildSchema(`
         password:String,
         nombre:String,
         direccion:String,
-        edad:Number
+        edad:Int
         telefono:String,
         fotoUrl:String
     }
@@ -19,27 +19,27 @@ const graphqlSchema = buildSchema(`
         password:String,
         nombre:String,
         direccion:String,
-        edad:Number
+        edad:Int
         telefono:String,
         fotoUrl:String
     }
     type Product{
         _id:String,
         title:String,
-        price:Number,
+        price:Int,
         thumbnail:String
     }
     input ProductInput{
         title:String,
-        price:Number,
+        price:Int,
         thumbnail:String
     }
     type Cart{
         _id:String,
-        products:Array
+        products:[Product]
     }
     input CartInput{
-        products:Array
+        products:[Product]
     }
     type Query{
         getUsers: [User],
@@ -51,11 +51,10 @@ const graphqlSchema = buildSchema(`
     }
 `);
 
-/*export const GraphqlController = () => {
+export const GraphqlController = () => {
   return graphqlHTTP({
     schema: graphqlSchema,
     rootValue: root,
     graphiql: true,
   });
 };
-*/
